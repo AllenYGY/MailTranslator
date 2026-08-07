@@ -8,22 +8,22 @@ After the user clicks the Mail banner action, translate the current message, ins
 
 - MailKit exposes no API that mutates the current reader body in place.
 - `MEExtensionManager.reloadVisibleMessages` is the supported refresh API.
-- On this macOS 26 build, returning `nil` from the primary-action completion tears down the request and can trigger ExtensionKit's duplicate-principal-object fault.
+- On this macOS 26 build, completing the primary action with either a view controller or `nil` tears down Mail's extension host and exits Mail.
 - Translation remains asynchronous and cached. MIME rewriting continues to be the source of the bilingual body.
 
 ## Design
 
-The primary action immediately returns a non-empty `MEExtensionViewController`. This keeps the action request and view service alive while translation runs. The controller displays compact progress and observes `TranslationStore` updates.
+The primary action keeps its request open while translation runs. Because Mail may redeliver an uncompleted action, a per-message cooldown gate absorbs duplicate callbacks without suppressing later manual retranslation.
 
-When translation finishes, `SecurityHandler` stores the rewritten MIME data and requests one throttled visible-message reload while the action session is still alive. Mail then invokes `decodedMessage`, which returns the cached rewritten data containing source text followed by translated text.
+When translation finishes, `SecurityHandler` stores the rewritten MIME data and requests one guarded visible-message reload. Mail then invokes `decodedMessage`, which returns the cached rewritten data containing source text followed by translated text.
 
 Refresh is attempted once per action. If Mail rejects the refresh or the extension session is interrupted, translation remains available in the progress controller and cache. The handler must not retry reload in a loop and must not terminate the extension process.
 
 ## Data Flow
 
 1. User clicks Translate.
-2. The handler decodes the message key and immediately completes with a progress controller.
-3. The handler marks the store as translating and starts the existing pipeline.
+2. The handler decodes the message key and rejects duplicate callbacks inside the cooldown window.
+3. The handler keeps the action request open, marks the store as translating, and starts the existing pipeline.
 4. Batch results update the store and progress controller.
 5. The completed translations are inserted below their source segments and saved to memory and disk cache.
 6. The handler requests one visible-message reload.
@@ -32,7 +32,7 @@ Refresh is attempted once per action. If Mail rejects the refresh or the extensi
 ## Error Handling
 
 - Configuration and translation errors update the progress controller and do not request reload.
-- Reload errors are logged and shown as a nonfatal status; the translated content remains available from cache.
+- Reload errors are logged as nonfatal; the translated content remains available from cache.
 - Repeated clicks while translating reuse the active state instead of starting duplicate translation work.
 
 ## Verification

@@ -1,0 +1,36 @@
+From: Alice Example <alice@example.com>
+To: Bob Example <bob@example.com>
+Subject: Q3 product launch plan and schedule confirmation
+Message-ID: <sample-en-001@example.com>
+Date: Thu, 6 Aug 2026 10:30:00 +0800
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="mt-boundary-42"
+
+--mt-boundary-42
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Hi Bob,
+
+I hope this email finds you well. I am writing to confirm the schedule for our Q3 product launch.
+
+The marketing team has prepared the launch materials, and the engineering team has completed the final round of testing. We are confident that the product will be ready for release on September 15th.
+
+Please let me know if you have any questions or concerns.
+
+Best regards,
+Alice
+
+--mt-boundary-42
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<html><body>
+<p>Hi Bob,</p>
+<p>I hope this email finds you well. I am writing to confirm the schedule for our <b>Q3 product launch</b>.</p>
+<p>The marketing team has prepared the launch materials, and the engineering team has completed the final round of testing. We are confident that the product will be ready for release on <a href="https://example.com/launch">September 15th</a>.</p>
+<p>Please let me know if you have any questions or concerns.</p>
+<p>Best regards,<br>Alice</p>
+</body></html>
+
+--mt-boundary-42--
