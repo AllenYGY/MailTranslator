@@ -522,7 +522,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "Resources/AppStore-App.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Resources/App.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "Resources/App-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -547,7 +547,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.allenygy.mailtranslator.storetests;
 				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) STOREKIT_LOCAL_TESTING";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) APP_STORE STOREKIT_LOCAL_TESTING";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MailTranslator.app/Contents/MacOS/MailTranslator";
 			};
 			name = Release;
@@ -556,7 +556,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_ENTITLEMENTS = "Resources/AppStore-Extension.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Resources/Ext.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "Resources/Ext-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -634,7 +634,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) APP_STORE";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -644,7 +644,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_ENTITLEMENTS = "Resources/AppStore-Extension.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Resources/Ext.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "Resources/Ext-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -716,7 +716,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) APP_STORE";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -727,7 +727,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "Resources/AppStore-App.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Resources/App.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "Resources/App-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -752,7 +752,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.allenygy.mailtranslator.storetests;
 				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) STOREKIT_LOCAL_TESTING";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) APP_STORE STOREKIT_LOCAL_TESTING";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MailTranslator.app/Contents/MacOS/MailTranslator";
 			};
 			name = Debug;

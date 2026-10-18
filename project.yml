@@ -8,7 +8,7 @@ settings:
     DEVELOPMENT_TEAM: A5V794JT7G
     CODE_SIGN_STYLE: Automatic
     REGISTER_APP_GROUPS: YES
-    SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) APP_STORE"
+    SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited)"
     OTHER_LDFLAGS: "$(inherited) -weak_framework Translation"
     ENABLE_HARDENED_RUNTIME: YES
     ARCHS: "arm64 x86_64"
@@ -32,7 +32,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.allenygy.mailtranslator
         INFOPLIST_FILE: Resources/App-Info.plist
-        CODE_SIGN_ENTITLEMENTS: Resources/AppStore-App.entitlements
+        CODE_SIGN_ENTITLEMENTS: Resources/App.entitlements
     dependencies:
       - target: MailTranslatorExtension
         embed: true
@@ -52,7 +52,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.allenygy.mailtranslator.extension
         INFOPLIST_FILE: Resources/Ext-Info.plist
-        CODE_SIGN_ENTITLEMENTS: Resources/AppStore-Extension.entitlements
+        CODE_SIGN_ENTITLEMENTS: Resources/Ext.entitlements
         APPLICATION_EXTENSION_API_ONLY: YES
         SKIP_INSTALL: YES
         OTHER_LDFLAGS: "$(inherited) -weak_framework Translation -e _NSExtensionMain"
@@ -72,7 +72,7 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/MailTranslator.app/Contents/MacOS/MailTranslator"
         BUNDLE_LOADER: "$(TEST_HOST)"
-        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) STOREKIT_LOCAL_TESTING"
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) APP_STORE STOREKIT_LOCAL_TESTING"
     dependencies:
       - target: MailTranslator
       - sdk: StoreKit.framework

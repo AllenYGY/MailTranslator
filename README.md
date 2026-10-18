@@ -4,6 +4,10 @@
 
 # MailTranslator
 
+> Website / Homebrew edition: `codex/direct-distribution`. Full provider support,
+> no StoreKit gate. Apple-only App Store edition: `codex/app-store`.
+> [Distribution maintenance](docs/distribution-branches.md).
+
 <p align="center">
   macOS Mail translation extension with Apple Translation, Volcengine, and OpenAI-compatible LLM providers.<br>
   为 macOS Mail 打造的翻译扩展，支持 Apple 系统翻译、火山翻译和 OpenAI 兼容 LLM。
