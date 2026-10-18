@@ -51,15 +51,28 @@ enum StorePurchaseAccess {
                 if PurchasePolicy.evaluate(app: nil, unlock: unlock, now: Date()) == .unlocked {
                     return .unlocked
                 }
+                var trial: PurchasePolicy.TrialRecord?
+                if let result = await Transaction.latest(for: PurchasePolicy.trialProductID) {
+                    guard case let .verified(transaction) = result else {
+                        logger.notice("trial transaction is unverified")
+                        return .unavailable
+                    }
+                    trial = .init(productID: transaction.productID,
+                                  nonConsumable: transaction.productType == .nonConsumable,
+                                  purchasedAt: transaction.purchaseDate,
+                                  originalPurchasedAt: transaction.originalPurchaseDate,
+                                  revoked: transaction.revocationDate != nil,
+                                  trusted: accepts(transaction.environment))
+                }
                 guard case let .verified(app) = try await AppTransaction.shared else {
                     logger.notice("app transaction is unverified")
                     return .unavailable
                 }
                 logger.notice("verified app bundle=\(app.bundleID, privacy: .public), environment=\(app.environment.rawValue, privacy: .public)")
                 return PurchasePolicy.evaluate(
-                    app: .init(bundleID: app.bundleID, purchasedAt: app.originalPurchaseDate,
-                               revoked: app.revocationDate != nil, trusted: accepts(app.environment)),
-                    unlock: unlock, now: Date())
+                    app: .init(bundleID: app.bundleID, revoked: app.revocationDate != nil,
+                               trusted: accepts(app.environment)),
+                    unlock: unlock, trial: trial, now: Date())
             }
         } catch {
             let failure = error as NSError

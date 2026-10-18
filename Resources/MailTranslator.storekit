@@ -3,6 +3,26 @@
   "nonRenewingSubscriptions": [],
   "products": [
     {
+      "displayPrice": "0.00",
+      "familyShareable": false,
+      "internalID": "1000002",
+      "localizations": [
+        {
+          "description": "Try all translation features free for seven days. No automatic renewal; permanent unlock is a separate one-time purchase.",
+          "displayName": "7-day Trial",
+          "locale": "en_US"
+        },
+        {
+          "description": "免费完整试用七天，不自动续费。到期后可另行一次性购买永久解锁。",
+          "displayName": "7 天免费试用",
+          "locale": "zh_CN"
+        }
+      ],
+      "productID": "io.github.allenygy.mailtranslator.trial7",
+      "referenceName": "7-day Trial",
+      "type": "NonConsumable"
+    },
+    {
       "displayPrice": "6.00",
       "familyShareable": false,
       "internalID": "1000001",

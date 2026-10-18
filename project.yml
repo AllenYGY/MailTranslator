@@ -1,7 +1,7 @@
 name: MailTranslator
 options:
   deploymentTarget:
-    macOS: "14.0"
+    macOS: "26.0"
 settings:
   base:
     SWIFT_VERSION: "5.0"
@@ -84,6 +84,10 @@ schemes:
         MailTranslator: all
     archive:
       config: Release
+    test:
+      targets:
+        - StorePurchaseTests
+      parallelizable: false
   StorePurchaseTests:
     build:
       targets:

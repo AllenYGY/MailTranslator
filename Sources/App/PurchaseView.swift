@@ -7,9 +7,11 @@ final class PurchaseView: NSStackView {
     private let summary = NSTextField(labelWithString: "验证中")
     private let status = NSTextField(labelWithString: "正在验证 App Store 授权…")
     private let buy = NSButton(title: "永久解锁", target: nil, action: nil)
+    private let startTrial = NSButton(title: "免费开始 7 天试用", target: nil, action: nil)
     private let restore = NSButton(title: "恢复购买", target: nil, action: nil)
     private let progress = NSProgressIndicator()
     private var product: Product?
+    private var trialProduct: Product?
     private var operation: Task<Void, Never>?
     private var updates: Task<Void, Never>?
     private var entitlement: PurchasePolicy.State = .unavailable
@@ -39,6 +41,13 @@ final class PurchaseView: NSStackView {
         buy.action = #selector(purchase)
         buy.image = NSImage(systemSymbolName: "lock.open", accessibilityDescription: nil)
         buy.imagePosition = .imageLeading
+        startTrial.bezelStyle = .rounded
+        startTrial.isEnabled = false
+        startTrial.isHidden = true
+        startTrial.target = self
+        startTrial.action = #selector(beginTrial)
+        startTrial.image = NSImage(systemSymbolName: "gift", accessibilityDescription: nil)
+        startTrial.imagePosition = .imageLeading
         restore.bezelStyle = .rounded
         restore.target = self
         restore.action = #selector(restorePurchase)
@@ -49,10 +58,15 @@ final class PurchaseView: NSStackView {
         progress.isDisplayedWhenStopped = false
         addArrangedSubview(status)
         status.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        let actions = NSStackView(views: [buy, restore, progress])
+        let disclosure = NSTextField(wrappingLabelWithString: "免费领取后可完整试用 7 天，每个 Apple 账户仅一次，恢复购买或重装不会重置。\n不自动续费；到期需另行一次性购买永久解锁，翻译服务费用另计。")
+        disclosure.font = .systemFont(ofSize: 11)
+        disclosure.textColor = .secondaryLabelColor
+        addArrangedSubview(disclosure)
+        disclosure.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        let actions = NSStackView(views: [startTrial, buy, restore, progress])
         actions.spacing = 10
         addArrangedSubview(actions)
-        heightAnchor.constraint(equalToConstant: 104).isActive = true
+        heightAnchor.constraint(equalToConstant: 144).isActive = true
         #if !STOREKIT_UI_TEST
         operation = Task { [weak self] in
             await self?.load()
@@ -61,7 +75,8 @@ final class PurchaseView: NSStackView {
             for await update in Transaction.updates {
                 guard !Task.isCancelled else { break }
                 guard case let .verified(transaction) = update,
-                      transaction.productID == PurchasePolicy.productID,
+                      [PurchasePolicy.productID, PurchasePolicy.trialProductID].contains(transaction.productID),
+                      transaction.productType == .nonConsumable,
                       StorePurchaseAccess.accepts(transaction.environment) else { continue }
                 await transaction.finish()
                 await self?.refresh()
@@ -80,6 +95,8 @@ final class PurchaseView: NSStackView {
     private func busy(_ value: Bool) {
         isBusy = value
         buy.isEnabled = !value && product != nil && entitlement != .unlocked
+        startTrial.isHidden = entitlement != .notStarted
+        startTrial.isEnabled = !value && trialProduct != nil && entitlement == .notStarted
         restore.isEnabled = !value
         if value { progress.startAnimation(nil) } else { progress.stopAnimation(nil) }
     }
@@ -95,6 +112,10 @@ final class PurchaseView: NSStackView {
             summary.stringValue = "已永久解锁"
             summary.textColor = .systemGreen
             status.stringValue = "一次性购买 · 永久使用"
+        case .notStarted:
+            summary.stringValue = "试用尚未开始"
+            summary.textColor = .secondaryLabelColor
+            status.stringValue = "领取免费 7 天试用后开始计时，也可直接购买永久解锁"
         case let .trial(until):
             summary.stringValue = "完整试用中"
             summary.textColor = .controlAccentColor
@@ -117,29 +138,41 @@ final class PurchaseView: NSStackView {
         busy(true)
         do {
             let products = try await StoreRequest.run {
-                try await Product.products(for: [PurchasePolicy.productID])
+                try await Product.products(for: [PurchasePolicy.productID, PurchasePolicy.trialProductID])
             }
-            guard let item = products.first, item.type == .nonConsumable else {
+            product = products.first { $0.id == PurchasePolicy.productID && $0.type == .nonConsumable }
+            trialProduct = products.first {
+                $0.id == PurchasePolicy.trialProductID && $0.type == .nonConsumable && $0.price == 0
+            }
+            if let product { buy.title = "永久解锁 \(product.displayPrice)" }
+            if product == nil || (entitlement == .notStarted && trialProduct == nil) {
                 throw NSError(domain: "MailTranslator.Store", code: 2,
-                              userInfo: [NSLocalizedDescriptionKey: "解锁商品暂不可用，请稍后恢复购买重试"])
+                              userInfo: [NSLocalizedDescriptionKey: "部分商品暂不可用，请稍后恢复购买重试；免费试用商品必须为零价格"])
             }
-            product = item
-            buy.title = "永久解锁 \(item.displayPrice)"
         } catch { status.stringValue = error.localizedDescription }
         busy(false)
     }
 
     @objc private func purchase() {
         guard let product, buy.isEnabled else { return }
+        performPurchase(product)
+    }
+
+    @objc private func beginTrial() {
+        guard let trialProduct, startTrial.isEnabled, trialProduct.price == 0 else { return }
+        performPurchase(trialProduct)
+    }
+
+    private func performPurchase(_ item: Product) {
         busy(true)
         status.stringValue = "等待 App Store 确认购买…"
         operation = Task { [weak self] in
             guard let self else { return }
             do {
-                switch try await product.purchase() {
+                switch try await item.purchase() {
                 case let .success(result):
                     guard case let .verified(transaction) = result,
-                          transaction.productID == PurchasePolicy.productID,
+                          transaction.productID == item.id,
                           transaction.productType == .nonConsumable,
                           StorePurchaseAccess.accepts(transaction.environment) else {
                         throw NSError(domain: "MailTranslator.Store", code: 3,
@@ -167,7 +200,7 @@ final class PurchaseView: NSStackView {
                 update(try await StorePurchaseAccess.restore())
                 if entitlement == .unlocked {
                     status.stringValue = "已恢复永久购买 · 无需再次付费"
-                } else if product == nil {
+                } else if product == nil || (entitlement == .notStarted && trialProduct == nil) {
                     await load()
                 }
             } catch is CancellationError {

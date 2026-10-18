@@ -9,7 +9,7 @@ rsync -a Sources Resources "$STAGE"/
 cd "$STAGE"
 
 SDK=$(xcrun --show-sdk-path)
-TARGETS=(arm64-apple-macos14.0 x86_64-apple-macos14.0)
+TARGETS=(arm64-apple-macos26.0 x86_64-apple-macos26.0)
 APP=build/MailTranslator.app
 EXT="$APP/Contents/PlugIns/MailTranslatorExtension.appex"
 ARCH_BUILD=build/.arch

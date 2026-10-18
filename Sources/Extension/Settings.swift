@@ -27,9 +27,6 @@ enum Settings {
     }
 
     static var current: TranslatorConfig {
-        if let override = environmentConfig() {
-            return override
-        }
         lock.lock()
         defer { lock.unlock() }
         guard let fileURL else { return .default }
@@ -47,26 +44,4 @@ enum Settings {
             .appendingPathComponent("MailTranslator/cache")
     }
 
-    /// 命令行/调试用环境变量覆盖（tmtest）。
-    private static func environmentConfig() -> TranslatorConfig? {
-        let env = ProcessInfo.processInfo.environment
-        guard env["MT_PROVIDER"] != nil || env["MT_API_BASE"] != nil else {
-            return nil
-        }
-        var config = TranslatorConfig.default
-        if let provider = env["MT_PROVIDER"] {
-            config.activeProvider = provider
-        }
-        if let target = env["MT_TARGET"] {
-            config.targetLanguage = target
-        }
-        var llmProfile = config.activeLLMProfile
-        if let base = env["MT_API_BASE"] { llmProfile.baseURL = base }
-        if let model = env["MT_MODEL"] { llmProfile.model = model }
-        if let key = env["MT_API_KEY"] { llmProfile.apiKey = key }
-        config.setActiveLLMProfile(llmProfile)
-        if let ak = env["MT_VOLC_AK"] { config.volcengine.accessKeyID = ak }
-        if let sk = env["MT_VOLC_SK"] { config.volcengine.secretAccessKey = sk }
-        return config
-    }
 }

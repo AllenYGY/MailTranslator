@@ -25,14 +25,98 @@ final class PurchaseTests: XCTestCase {
         try await super.tearDown()
     }
 
-    private func loadProduct() async throws -> Product {
+    private func loadProduct(_ id: String = PurchasePolicy.productID) async throws -> Product {
         var product: Product?
         for _ in 0..<3 {
-            product = try await Product.products(for: [PurchasePolicy.productID]).first
+            product = try await Product.products(for: [id]).first
             if product != nil { break }
             try await Task.sleep(nanoseconds: 500_000_000)
         }
         return try XCTUnwrap(product)
+    }
+
+    private func claimTrial() async throws -> Transaction {
+        let item = try await loadProduct(PurchasePolicy.trialProductID)
+        XCTAssertEqual(item.type, .nonConsumable)
+        XCTAssertEqual(item.price, 0, "The trial must never charge")
+        XCTAssertEqual(item.displayName, "7 天免费试用")
+        guard case let .success(result) = try await item.purchase(),
+              case let .verified(transaction) = result else {
+            throw NSError(domain: "PurchaseTests", code: 1,
+                          userInfo: [NSLocalizedDescriptionKey: "Expected verified free trial"])
+        }
+        await transaction.finish()
+        return transaction
+    }
+
+    private func trialRecord(_ transaction: Transaction) -> PurchasePolicy.TrialRecord {
+        .init(productID: transaction.productID, nonConsumable: transaction.productType == .nonConsumable,
+              purchasedAt: transaction.purchaseDate, originalPurchasedAt: transaction.originalPurchaseDate,
+              revoked: transaction.revocationDate != nil,
+              trusted: StorePurchaseAccess.accepts(transaction.environment))
+    }
+
+    func testFreeTrialUsesSignedOriginalDateAndRequiresAppIdentity() async throws {
+        let transaction = try await claimTrial()
+        let trial = trialRecord(transaction)
+        let end = transaction.originalPurchaseDate.addingTimeInterval(PurchasePolicy.trialDuration)
+        let app = PurchasePolicy.AppRecord(bundleID: BundleID.app, revoked: false, trusted: true)
+        XCTAssertEqual(PurchasePolicy.evaluate(app: app, unlock: nil, trial: trial,
+            now: transaction.purchaseDate), .trial(until: end))
+        XCTAssertEqual(PurchasePolicy.evaluate(app: app, unlock: nil, trial: trial, now: end), .expired)
+        XCTAssertEqual(PurchasePolicy.evaluate(app: nil, unlock: nil, trial: trial,
+            now: transaction.purchaseDate), .unavailable)
+    }
+
+    func testRestoreAndRediscoveryDoNotResetTrial() async throws {
+        let original = try await claimTrial()
+        let originalEnd = original.originalPurchaseDate.addingTimeInterval(PurchasePolicy.trialDuration)
+        try await AppStore.sync()
+        guard case let .verified(restored)? = await Transaction.latest(for: PurchasePolicy.trialProductID) else {
+            XCTFail("Restore must rediscover the signed non-consumable trial")
+            return
+        }
+        XCTAssertEqual(restored.originalPurchaseDate, original.originalPurchaseDate)
+        let app = PurchasePolicy.AppRecord(bundleID: BundleID.app, revoked: false, trusted: true)
+        XCTAssertEqual(PurchasePolicy.evaluate(app: app, unlock: nil, trial: trialRecord(restored),
+            now: originalEnd), .expired)
+        XCTAssertEqual(session.allTransactions().count, 1, "Restore must not create another trial")
+    }
+
+    func testRefundedTrialCannotGrantAccess() async throws {
+        _ = try await claimTrial()
+        let transaction = try XCTUnwrap(session.allTransactions().first)
+        try session.refundTransaction(identifier: transaction.identifier)
+        try await AppStore.sync()
+        var revoked: Transaction?
+        for _ in 0..<100 {
+            if case let .verified(latest)? = await Transaction.latest(for: PurchasePolicy.trialProductID),
+               latest.revocationDate != nil {
+                revoked = latest
+                break
+            }
+            try await Task.sleep(nanoseconds: 100_000_000)
+        }
+        let refunded = try XCTUnwrap(revoked, "StoreKit must deliver the signed trial revocation")
+        let app = PurchasePolicy.AppRecord(bundleID: BundleID.app, revoked: false, trusted: true)
+        XCTAssertEqual(PurchasePolicy.evaluate(app: app, unlock: nil, trial: trialRecord(refunded),
+            now: Date()), .unavailable)
+        let access = await StorePurchaseAccess.state()
+        XCTAssertFalse(access.canTranslate)
+    }
+
+    func testPendingTrialDoesNotGrantAccess() async throws {
+        session.askToBuyEnabled = true
+        let item = try await loadProduct(PurchasePolicy.trialProductID)
+        guard case .pending = try await item.purchase() else {
+            XCTFail("Expected pending free-trial approval")
+            return
+        }
+        if case .verified? = await Transaction.latest(for: PurchasePolicy.trialProductID) {
+            XCTFail("Pending trial must not create a verified transaction")
+        }
+        let access = await StorePurchaseAccess.state()
+        XCTAssertFalse(access.canTranslate)
     }
 
     func testProductPurchaseAndRediscovery() async throws {

@@ -108,6 +108,7 @@ struct CoreTests {
         } catch SharedConfiguration.AccessError.unavailable {
         }
 
+        #if !APP_STORE
         // MARK: APIEndpoint
 
         let remote = try APIEndpoint.url(from: "https://api.example.com/v1")
@@ -365,6 +366,7 @@ struct CoreTests {
             expect(parser.finish().isEmpty, "无标记时 finish 也不应产出")
         }
 
+        #endif
         // MARK: planBatches
 
         let inputs = (0..<10).map {
@@ -381,6 +383,7 @@ struct CoreTests {
         let escaped = InsertionHTML.fromPlainText("a<b>&\"x\"\n换行")
         expect(escaped == "a&lt;b&gt;&amp;\"x\"<br>换行", "纯文本应转义并转换换行：\(escaped)")
 
+        #if !APP_STORE
         // MARK: VolcengineSigner
 
         let fixedDate = Date(timeIntervalSince1970: 1_700_000_000)
@@ -423,6 +426,7 @@ struct CoreTests {
         )
         expect(signed.authorization == signedAgain.authorization, "相同输入签名应确定一致")
 
+        #endif
         // MARK: 语言支持
 
         expect(TargetLanguage.zhHans.volcCode == "zh", "简中火山代码")
@@ -744,22 +748,41 @@ struct CoreTests {
         let purchaseDate = Date(timeIntervalSince1970: 1_700_000_000)
         let trialEnd = purchaseDate.addingTimeInterval(7 * 24 * 60 * 60)
         let appPurchase = PurchasePolicy.AppRecord(
-            bundleID: BundleID.app, purchasedAt: purchaseDate, revoked: false, trusted: true
+            bundleID: BundleID.app, revoked: false, trusted: true
         )
-        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, now: purchaseDate) == .trial(until: trialEnd), "首次已验证下载应获得七天试用")
-        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, now: trialEnd) == .expired, "七天边界必须结束试用")
-        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, now: trialEnd.addingTimeInterval(-1)).canTranslate, "试用最后一秒可翻译")
+        expect(!PurchasePolicy.evaluate(app: appPurchase, unlock: nil, now: purchaseDate).canTranslate, "已验证下载本身不得启动试用，必须领取免费试用商品")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, now: purchaseDate) == .notStarted, "尚未领取免费商品应显示未开始，而不是已过期")
+        let trial = PurchasePolicy.TrialRecord(productID: PurchasePolicy.trialProductID, nonConsumable: true,
+            purchasedAt: purchaseDate, originalPurchasedAt: purchaseDate, revoked: false, trusted: true)
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, trial: trial, now: purchaseDate) == .trial(until: trialEnd), "已验证免费商品应从原始交易开始七天试用")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, trial: trial, now: trialEnd) == .expired, "七天边界必须结束试用")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, trial: trial, now: trialEnd.addingTimeInterval(-1)).canTranslate, "试用最后一秒可翻译")
         expect(PurchasePolicy.evaluate(app: nil, unlock: nil, now: purchaseDate) == .unavailable, "无凭证不得启动本地试用")
-        expect(PurchasePolicy.evaluate(app: .init(bundleID: "other", purchasedAt: purchaseDate, revoked: false, trusted: true), unlock: nil, now: purchaseDate) == .unavailable, "其他应用凭证必须拒绝")
-        expect(PurchasePolicy.evaluate(app: .init(bundleID: BundleID.app, purchasedAt: purchaseDate, revoked: false, trusted: false), unlock: nil, now: purchaseDate) == .unavailable, "未验证下载必须拒绝")
-        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, now: purchaseDate.addingTimeInterval(-1)) == .unavailable, "未来下载日期不能延长试用")
+        for app in [nil, PurchasePolicy.AppRecord(bundleID: "other", revoked: false, trusted: true),
+                    .init(bundleID: BundleID.app, revoked: false, trusted: false),
+                    .init(bundleID: BundleID.app, revoked: true, trusted: true)] {
+            expect(PurchasePolicy.evaluate(app: app, unlock: nil, trial: trial, now: purchaseDate) == .unavailable, "免费试用仍必须验证应用身份、环境及撤销状态")
+        }
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, trial: trial, now: purchaseDate.addingTimeInterval(-1)) == .unavailable, "未来试用交易不能授权")
+        let restoredTrial = PurchasePolicy.TrialRecord(productID: PurchasePolicy.trialProductID, nonConsumable: true,
+            purchasedAt: trialEnd, originalPurchasedAt: purchaseDate, revoked: false, trusted: true)
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, trial: restoredTrial, now: trialEnd) == .expired, "恢复购买或重装不得以新交易日期重启七天试用")
+        for invalidTrial in [
+            PurchasePolicy.TrialRecord(productID: "other", nonConsumable: true, purchasedAt: purchaseDate, originalPurchasedAt: purchaseDate, revoked: false, trusted: true),
+            .init(productID: PurchasePolicy.trialProductID, nonConsumable: false, purchasedAt: purchaseDate, originalPurchasedAt: purchaseDate, revoked: false, trusted: true),
+            .init(productID: PurchasePolicy.trialProductID, nonConsumable: true, purchasedAt: purchaseDate, originalPurchasedAt: purchaseDate, revoked: true, trusted: true),
+            .init(productID: PurchasePolicy.trialProductID, nonConsumable: true, purchasedAt: purchaseDate, originalPurchasedAt: purchaseDate, revoked: false, trusted: false),
+            .init(productID: PurchasePolicy.trialProductID, nonConsumable: true, purchasedAt: purchaseDate, originalPurchasedAt: trialEnd, revoked: false, trusted: true)
+        ] {
+            expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, trial: invalidTrial, now: trialEnd) == .unavailable, "错误商品、类型、撤销、未验证或日期异常的试用不得授权或允许重新领取")
+        }
         let unlock = PurchasePolicy.UnlockRecord(productID: PurchasePolicy.productID, nonConsumable: true, revoked: false, trusted: true)
         expect(PurchasePolicy.evaluate(app: nil, unlock: unlock, now: trialEnd) == .unlocked, "已验证永久购买不依赖试用凭证")
-        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: PurchasePolicy.productID, nonConsumable: true, revoked: true, trusted: true), now: trialEnd) == .expired, "退款应撤销永久权限")
-        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: "other", nonConsumable: true, revoked: false, trusted: true), now: trialEnd) == .expired, "其他商品不能解锁")
-        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: PurchasePolicy.productID, nonConsumable: false, revoked: false, trusted: true), now: trialEnd) == .expired, "错误商品类型不能解锁")
-        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: PurchasePolicy.productID, nonConsumable: true, revoked: false, trusted: false), now: trialEnd) == .expired, "未验证购买不能解锁")
-        expect(PurchasePolicy.evaluate(app: .init(bundleID: BundleID.app, purchasedAt: purchaseDate, revoked: true, trusted: true), unlock: nil, now: purchaseDate) == .unavailable, "撤销应用购买不能试用")
+        expect(PurchasePolicy.evaluate(app: nil, unlock: unlock, trial: restoredTrial, now: trialEnd) == .unlocked, "永久购买优先于过期试用及应用验证")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: PurchasePolicy.productID, nonConsumable: true, revoked: true, trusted: true), trial: trial, now: trialEnd) == .expired, "退款应撤销永久权限")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: "other", nonConsumable: true, revoked: false, trusted: true), trial: trial, now: trialEnd) == .expired, "其他商品不能解锁")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: PurchasePolicy.productID, nonConsumable: false, revoked: false, trusted: true), trial: trial, now: trialEnd) == .expired, "错误商品类型不能解锁")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: PurchasePolicy.productID, nonConsumable: true, revoked: false, trusted: false), trial: trial, now: trialEnd) == .expired, "未验证购买不能解锁")
 
         #if APP_STORE
         let storeResult: Int = try await StoreRequest.run(seconds: 1) { 42 }
