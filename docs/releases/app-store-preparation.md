@@ -1,5 +1,63 @@
 # MailTranslator App Store Preparation
 
+## Current Candidate: Apple-Only Edition (2026-10-19)
+
+This section supersedes older provider and original-download trial descriptions below.
+
+- `main` remains the direct/Homebrew edition with LLM, Volcengine, and custom APIs.
+- `codex/app-store` removes third-party provider code and configuration. It requires
+  macOS 26 and uses Apple Translation with installed source/target language resources.
+- Build 4 was rejected under Guideline 3.1.1 (submission
+  `8eb866f2-22fa-4644-a548-1d049c169912`). Build 5 (`27596a8`) was uploaded and
+  processed; export compliance was completed on October 19. It is Ready to Submit
+  and available to the existing MailTranslator Internal group.
+- Build 6 corrects residual third-party-fee text and synchronizes the tracked Xcode
+  project with the Apple-only sources for clean checkout/Cloud builds.
+  Its archive at `/tmp/MailTranslator-Build6.xcarchive` succeeded, both executable
+  slices are universal, and strict deep signature validation passed. Xcode reported
+  upload success at 01:03 Hong Kong time on October 19. Apple processing is pending.
+- Trial now starts after explicitly claiming a free non-consumable IAP, product
+  `io.github.allenygy.mailtranslator.trial7` (Apple ID `6824203213`). Its signed
+  original transaction date starts exactly 604800 seconds. Restore/reinstall does
+  not reset it. No automatic billing or renewal. This replaces the previous
+  receipt-download-date trial, whose Sandbox date is fixed in 2013.
+- Trial availability: all countries/regions, China mainland base price CNY 0,
+  equivalent zero prices in 175 storefronts. English and Simplified Chinese
+  localizations were saved. The review image shows the actual Apple translation
+  service in Mail, captured on build 4; it does not depict the newer trial-claim UI.
+- Permanent unlock remains `io.github.allenygy.mailtranslator.unlock`, CNY 6 in
+  China mainland. App download remains free; release remains manual.
+- Chinese and English product descriptions and review instructions now describe
+  Apple-only translation and the claim-based trial. Provider and old purchase UI
+  screenshots were removed from both localizations. Genuine Apple bilingual and
+  original-only Mail screenshots remain; their capture provenance is in
+  `docs/app-store/artwork-manifest.json`.
+- `./test.sh` passes core, edition isolation, and settings hit tests for build 6.
+  All 10 hosted StoreKit tests also pass, including positive signed-trial access
+  before revocation and exact denial afterward. The fixture was read from the test
+  bundle with the original source checkout unavailable, matching Cloud test phases.
+  Result: `/tmp/MailTranslator-CloudPrereqs-GREEN.QbMVcx/Tests-Assertions.xcresult`.
+  `./build.sh` succeeds with Store gates and Store entitlements for both targets.
+- The free trial item is complete and was added to the review draft (Ready for
+  Review), not submitted independently. App Privacy now shows Data Not Collected,
+  matching the Apple-only implementation and Apple's exclusion of on-device data
+  from collection. The public policy URL still needs to point to this edition's
+  policy after pushing it. Direct-distribution privacy remains on `main`.
+- Xcode Cloud setup is documented in `docs/releases/xcode-cloud.md`. Initial
+  onboarding was completed by the user in Xcode while native CUA capture remains
+  blocked by `SCStreamError -3811`. The web team page now lists MailTranslator
+  (`3b442a97-3af7-41c3-810c-fa06646aee45`), Cloud Build 1 in progress. This first
+  run predates the pushed project repair; no Cloud build success is claimed yet.
+- Cloud authorization troubleshooting confirmed the signed-in GitHub identity has
+  ADMIN permission on `AllenYGY/MailTranslator`. Local `origin` still pointed at
+  the renamed `AllenYGY/ExtentionforMail`; updated it to
+  `git@github.com:AllenYGY/MailTranslator.git` and verified remote branch access.
+  This removes a repository-identity mismatch; GitHub App access and a successful
+  Cloud build still require verification.
+- Real TestFlight trial claim/restore and build 6 Mail translation remain unverified.
+  Existing build 3/4 permanent unlock/restore evidence below is historical and does
+  not establish the new free trial path. No resubmission is recorded yet.
+
 Initial preparation checked on 2026-10-10. Historical draft-state notes below are
 retained as an audit trail. On 2026-10-11, version 1.0.0 (4) and the permanent unlock
 were submitted together and reached Waiting for Review, with manual release.

@@ -66,6 +66,8 @@ targets:
       - Sources/Core/PurchasePolicy.swift
       - Sources/Core/StorePurchaseAccess.swift
       - Tests/StorePurchaseTests
+      - path: Resources/MailTranslator.storekit
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.allenygy.mailtranslator.storetests

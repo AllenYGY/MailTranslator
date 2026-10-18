@@ -8,9 +8,10 @@ final class PurchaseTests: XCTestCase {
 
     override func setUp() async throws {
         try await super.setUp()
-        let config = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Resources/MailTranslator.storekit")
+        let config = try XCTUnwrap(
+            Bundle(for: PurchaseTests.self).url(forResource: "MailTranslator", withExtension: "storekit"),
+            "The StoreKit fixture must be included in the test bundle's resources"
+        )
         session = try SKTestSession(contentsOf: config)
         session.resetToDefaultState()
         session.disableDialogs = true
@@ -20,7 +21,7 @@ final class PurchaseTests: XCTestCase {
     }
 
     override func tearDown() async throws {
-        session.clearTransactions()
+        session?.clearTransactions()
         session = nil
         try await super.tearDown()
     }
@@ -60,6 +61,8 @@ final class PurchaseTests: XCTestCase {
         let transaction = try await claimTrial()
         let trial = trialRecord(transaction)
         let end = transaction.originalPurchaseDate.addingTimeInterval(PurchasePolicy.trialDuration)
+        let access = await StorePurchaseAccess.state()
+        XCTAssertEqual(access, .trial(until: end))
         let app = PurchasePolicy.AppRecord(bundleID: BundleID.app, revoked: false, trusted: true)
         XCTAssertEqual(PurchasePolicy.evaluate(app: app, unlock: nil, trial: trial,
             now: transaction.purchaseDate), .trial(until: end))
@@ -84,7 +87,10 @@ final class PurchaseTests: XCTestCase {
     }
 
     func testRefundedTrialCannotGrantAccess() async throws {
-        _ = try await claimTrial()
+        let claimed = try await claimTrial()
+        let beforeRefund = await StorePurchaseAccess.state()
+        XCTAssertEqual(beforeRefund, .trial(until:
+            claimed.originalPurchaseDate.addingTimeInterval(PurchasePolicy.trialDuration)))
         let transaction = try XCTUnwrap(session.allTransactions().first)
         try session.refundTransaction(identifier: transaction.identifier)
         try await AppStore.sync()
@@ -102,7 +108,7 @@ final class PurchaseTests: XCTestCase {
         XCTAssertEqual(PurchasePolicy.evaluate(app: app, unlock: nil, trial: trialRecord(refunded),
             now: Date()), .unavailable)
         let access = await StorePurchaseAccess.state()
-        XCTAssertFalse(access.canTranslate)
+        XCTAssertEqual(access, .unavailable)
     }
 
     func testPendingTrialDoesNotGrantAccess() async throws {

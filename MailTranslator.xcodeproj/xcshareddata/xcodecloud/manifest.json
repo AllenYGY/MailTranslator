@@ -1,0 +1,9 @@
+{
+  "id" : "847f898e-7be8-4fa4-a5dc-ba39d2b336d5",
+  "targets" : [
+    {
+      "id" : "3b442a97-3af7-41c3-810c-fa06646aee45",
+      "name" : "MailTranslator"
+    }
+  ]
+}

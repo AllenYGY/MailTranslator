@@ -13,10 +13,8 @@
 		0D6F82659E29C169330772CC /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = FA922EF1CB4F064EEF673C44 /* AppIcon.icns */; };
 		16E02E6DB7C0C6824F80168C /* LanguageSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B3E05F5F6BD220FFD56936 /* LanguageSupport.swift */; };
 		1743CB5FC32849D232D5AE3E /* TranslationRefreshCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FC8F17475E76CB3AFE735D /* TranslationRefreshCoordinator.swift */; };
-		1F96A5F5930FC5F6CDBB3CAF /* OpenAICompatibleEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8A1582BE8CD148254C8D62C /* OpenAICompatibleEngine.swift */; };
 		222CE42E1B840F450B406F90 /* LatestRequestGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2040CDA49CE3C30FC5D4B0A4 /* LatestRequestGate.swift */; };
 		31E9307C919C92683D690485 /* TranslationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FFC4C0F519E8964D2CB8F8 /* TranslationEngine.swift */; };
-		33E835EFC66A029F8AA8D29D /* OpenAICompatibleEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8A1582BE8CD148254C8D62C /* OpenAICompatibleEngine.swift */; };
 		354B7BC6A278D8657D85CA6A /* LatestRequestGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2040CDA49CE3C30FC5D4B0A4 /* LatestRequestGate.swift */; };
 		3FBBC13FDA0DAB3CC0E223E8 /* TranslationPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80694C227738CF81F26FCEB8 /* TranslationPipeline.swift */; };
 		422C0958AB79E2261A789907 /* MailKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6DC552E55DCA9CB68067397 /* MailKit.framework */; };
@@ -31,27 +29,20 @@
 		6C8004F6DC88DEF234E4778E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24CD7B67C835918C90426EAD /* SettingsViewController.swift */; };
 		6DFD9A8AF9E1BE5BE472CF9C /* AppleTranslationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B47C77092B542BCF1AE024C /* AppleTranslationEngine.swift */; };
 		7749A10E43D4D5A487D04723 /* PopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA294A6DF5924AFF0EF37EF /* PopoverViewController.swift */; };
-		7B9ACE2AACA5AECF1E77F407 /* VolcengineEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649B7E245E1D65C4C31DE36 /* VolcengineEngine.swift */; };
 		7BCA3F22D6198B6EF50DEB38 /* TranslationActionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDC6E02E3235B615D56C0DE /* TranslationActionContext.swift */; };
 		7C251721DB34D13E7AAEF7D3 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE04CD233D5B93AECB9887C3 /* PurchaseView.swift */; };
 		7C6812A10DDEAD36B09C92E5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD0F1F1417440CAA2833EFD6 /* StoreKit.framework */; };
 		8286D81F0382B17E1ABE1885 /* TranslationCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EFD52CE85B57A9509A5A93A /* TranslationCache.swift */; };
-		8351CF771F48EF926B0862DF /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD1901E2D28770B9BA0A290 /* APIEndpoint.swift */; };
 		84D7E55CFB47424E3BB283DA /* TranslationPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80694C227738CF81F26FCEB8 /* TranslationPipeline.swift */; };
 		889D21DF4D535F51FA1724D3 /* HTMLSegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101E3D93C9622B050C094723 /* HTMLSegments.swift */; };
 		918FC2E15848F2EFB629D8A4 /* ApplicationStatePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EC39FE5B45ED6499601544 /* ApplicationStatePolicy.swift */; };
-		92E8CFA16D3AA30E7991DA4A /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD1901E2D28770B9BA0A290 /* APIEndpoint.swift */; };
 		955691FAB1B1BF743D4E59E6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6D8BC0E47A7CC66723C9A2 /* Settings.swift */; };
-		960B8C170C7CF3885A3CC1FB /* VolcengineSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9EE121F5B21A8719C2A368 /* VolcengineSigner.swift */; };
 		98F5F07337B17C305DC23E34 /* SecurityHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC339CB7000F30BD9B32952 /* SecurityHandler.swift */; };
-		995C567C04383F2E4586AE35 /* VolcengineEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649B7E245E1D65C4C31DE36 /* VolcengineEngine.swift */; };
 		9B990591318E3FF732FE5D98 /* AppleTranslationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B47C77092B542BCF1AE024C /* AppleTranslationEngine.swift */; };
-		9EB3822D2AD60CFB2F61B92B /* VolcengineSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9EE121F5B21A8719C2A368 /* VolcengineSigner.swift */; };
 		A23509C8AF3BB009AF61BA0A /* TranslationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB1F54F9755B08715498C5D /* TranslationStore.swift */; };
 		A516C80FA103847689278804 /* LanguageSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B3E05F5F6BD220FFD56936 /* LanguageSupport.swift */; };
 		A84FAFEB634F8219C8161E4F /* StorePurchaseAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4856373EAF070B1751EA10EF /* StorePurchaseAccess.swift */; };
 		A9AA04F263C92E3F6770D541 /* SharedConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F20BD33DBE2E699728087F /* SharedConfiguration.swift */; };
-		AFBD2F56300040EEB94B2E8E /* LLMProviderPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433BCB3103AD8A4FEEEF8BEB /* LLMProviderPreset.swift */; };
 		B28D6B2FC5075C32FE9F1932 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB075B7FF42F3C49DD45680 /* main.swift */; };
 		B2DD49FF1349BDC6413143FB /* HTMLSegments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101E3D93C9622B050C094723 /* HTMLSegments.swift */; };
 		B3E88529411E3168D59C4FFD /* TranslationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FFC4C0F519E8964D2CB8F8 /* TranslationEngine.swift */; };
@@ -64,16 +55,14 @@
 		D2F0FA1BF3F1E541E1EC601F /* TranslatorConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4B86DF7B27433DC6EA5D0E /* TranslatorConfig.swift */; };
 		DBB7C299ECBAAAFE3BDFE26A /* PurchaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6BA129F1BA7DEC26D32EAC /* PurchaseTests.swift */; };
 		DD0523E4388F4BE211980DF1 /* PurchasePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ACB129335B73E97500BE71D /* PurchasePolicy.swift */; };
-		DD99BBE8AAF0B0A7E7B9802A /* LLMProviderPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433BCB3103AD8A4FEEEF8BEB /* LLMProviderPreset.swift */; };
 		DE16C192C4D74AD2B3DEAD2A /* EngineFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A85E976BDC97A3743F1A83 /* EngineFactory.swift */; };
+		E090643F21485FDB844B42DC /* MailTranslator.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 277F0DDD86691F396BC758DA /* MailTranslator.storekit */; };
 		E4D132A270A4A662EAF33C5F /* TranslationCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EFD52CE85B57A9509A5A93A /* TranslationCache.swift */; };
 		E87FD35D7FD993E00CC942CB /* TranslationActionGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71D95E95184337C2DF613EA8 /* TranslationActionGate.swift */; };
 		EBE791960D1E6E5A2D405E36 /* StoreKitTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B0D381786DA7F72DBA6E89 /* StoreKitTest.framework */; };
-		EE14DC69A41C05BA7AB633D1 /* OpenAIModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CCFB8A562DCC5162345B1AD /* OpenAIModelCatalog.swift */; };
 		F3B9A800662835159A0C099A /* TranslationTaskRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FAE627BCE007827D275AAFA /* TranslationTaskRegistry.swift */; };
 		F4490B958626549382E4D93D /* HTMLText.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC27927C5FDCB54BF928E1CF /* HTMLText.swift */; };
 		F8328866C9708224A1CA4D3C /* StorePurchaseAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4856373EAF070B1751EA10EF /* StorePurchaseAccess.swift */; };
-		FA08DC33FDEB6CAD9A1F1C68 /* OpenAIModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CCFB8A562DCC5162345B1AD /* OpenAIModelCatalog.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,13 +102,11 @@
 		101E3D93C9622B050C094723 /* HTMLSegments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLSegments.swift; sourceTree = "<group>"; };
 		2040CDA49CE3C30FC5D4B0A4 /* LatestRequestGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatestRequestGate.swift; sourceTree = "<group>"; };
 		24CD7B67C835918C90426EAD /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		277F0DDD86691F396BC758DA /* MailTranslator.storekit */ = {isa = PBXFileReference; path = MailTranslator.storekit; sourceTree = "<group>"; };
 		2ACB129335B73E97500BE71D /* PurchasePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasePolicy.swift; sourceTree = "<group>"; };
 		2B47C77092B542BCF1AE024C /* AppleTranslationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleTranslationEngine.swift; sourceTree = "<group>"; };
-		2CCFB8A562DCC5162345B1AD /* OpenAIModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIModelCatalog.swift; sourceTree = "<group>"; };
 		3AECACD67C27779BF17A1460 /* BundleID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleID.swift; sourceTree = "<group>"; };
-		3D9EE121F5B21A8719C2A368 /* VolcengineSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcengineSigner.swift; sourceTree = "<group>"; };
 		3FAE627BCE007827D275AAFA /* TranslationTaskRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationTaskRegistry.swift; sourceTree = "<group>"; };
-		433BCB3103AD8A4FEEEF8BEB /* LLMProviderPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMProviderPreset.swift; sourceTree = "<group>"; };
 		4856373EAF070B1751EA10EF /* StorePurchaseAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePurchaseAccess.swift; sourceTree = "<group>"; };
 		55F4E20EDB13847C51D68512 /* ConfigFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigFile.swift; sourceTree = "<group>"; };
 		71D95E95184337C2DF613EA8 /* TranslationActionGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationActionGate.swift; sourceTree = "<group>"; };
@@ -134,16 +121,13 @@
 		9B6D8BC0E47A7CC66723C9A2 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		A27A8E2B632689B524945A7D /* MailTranslator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MailTranslator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7FFC4C0F519E8964D2CB8F8 /* TranslationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationEngine.swift; sourceTree = "<group>"; };
-		A8A1582BE8CD148254C8D62C /* OpenAICompatibleEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAICompatibleEngine.swift; sourceTree = "<group>"; };
 		AFA294A6DF5924AFF0EF37EF /* PopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverViewController.swift; sourceTree = "<group>"; };
 		B1EC39FE5B45ED6499601544 /* ApplicationStatePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStatePolicy.swift; sourceTree = "<group>"; };
 		BC6BA129F1BA7DEC26D32EAC /* PurchaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseTests.swift; sourceTree = "<group>"; };
-		BCD1901E2D28770B9BA0A290 /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
 		BE04CD233D5B93AECB9887C3 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
 		BEDC6E02E3235B615D56C0DE /* TranslationActionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationActionContext.swift; sourceTree = "<group>"; };
 		C3F20BD33DBE2E699728087F /* SharedConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedConfiguration.swift; sourceTree = "<group>"; };
 		D3B0D381786DA7F72DBA6E89 /* StoreKitTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKitTest.framework; path = System/Library/Frameworks/StoreKitTest.framework; sourceTree = SDKROOT; };
-		E649B7E245E1D65C4C31DE36 /* VolcengineEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolcengineEngine.swift; sourceTree = "<group>"; };
 		EBB075B7FF42F3C49DD45680 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		EC27927C5FDCB54BF928E1CF /* HTMLText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLText.swift; sourceTree = "<group>"; };
 		EEB1F54F9755B08715498C5D /* TranslationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationStore.swift; sourceTree = "<group>"; };
@@ -241,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				FA922EF1CB4F064EEF673C44 /* AppIcon.icns */,
+				277F0DDD86691F396BC758DA /* MailTranslator.storekit */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -250,10 +235,6 @@
 			children = (
 				2B47C77092B542BCF1AE024C /* AppleTranslationEngine.swift */,
 				92A85E976BDC97A3743F1A83 /* EngineFactory.swift */,
-				A8A1582BE8CD148254C8D62C /* OpenAICompatibleEngine.swift */,
-				2CCFB8A562DCC5162345B1AD /* OpenAIModelCatalog.swift */,
-				E649B7E245E1D65C4C31DE36 /* VolcengineEngine.swift */,
-				3D9EE121F5B21A8719C2A368 /* VolcengineSigner.swift */,
 			);
 			name = Providers;
 			path = Sources/Providers;
@@ -282,7 +263,6 @@
 		F44F173ED39EC042D29FFD38 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				BCD1901E2D28770B9BA0A290 /* APIEndpoint.swift */,
 				B1EC39FE5B45ED6499601544 /* ApplicationStatePolicy.swift */,
 				3AECACD67C27779BF17A1460 /* BundleID.swift */,
 				55F4E20EDB13847C51D68512 /* ConfigFile.swift */,
@@ -290,7 +270,6 @@
 				EC27927C5FDCB54BF928E1CF /* HTMLText.swift */,
 				82B3E05F5F6BD220FFD56936 /* LanguageSupport.swift */,
 				2040CDA49CE3C30FC5D4B0A4 /* LatestRequestGate.swift */,
-				433BCB3103AD8A4FEEEF8BEB /* LLMProviderPreset.swift */,
 				860F97C1A706E2DBD4657F81 /* MIMEMessage.swift */,
 				2ACB129335B73E97500BE71D /* PurchasePolicy.swift */,
 				C3F20BD33DBE2E699728087F /* SharedConfiguration.swift */,
@@ -347,6 +326,7 @@
 			buildConfigurationList = 561A1357D9275EA809C296E9 /* Build configuration list for PBXNativeTarget "StorePurchaseTests" */;
 			buildPhases = (
 				AC12B25DA9CF90762400E523 /* Sources */,
+				DD1E62E9A5891B3772996FEE /* Resources */,
 				F9107DC0425A03145FEDEA70 /* Frameworks */,
 			);
 			buildRules = (
@@ -408,6 +388,14 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		DD1E62E9A5891B3772996FEE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E090643F21485FDB844B42DC /* MailTranslator.storekit in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E5E03386BEFAF9C6457A3EB2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -423,7 +411,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8351CF771F48EF926B0862DF /* APIEndpoint.swift in Sources */,
 				9B990591318E3FF732FE5D98 /* AppleTranslationEngine.swift in Sources */,
 				918FC2E15848F2EFB629D8A4 /* ApplicationStatePolicy.swift in Sources */,
 				B3F75531F61DD2594949DC29 /* BundleID.swift in Sources */,
@@ -431,13 +418,10 @@
 				640BA60A33FD90EC930FF1F8 /* EngineFactory.swift in Sources */,
 				889D21DF4D535F51FA1724D3 /* HTMLSegments.swift in Sources */,
 				F4490B958626549382E4D93D /* HTMLText.swift in Sources */,
-				DD99BBE8AAF0B0A7E7B9802A /* LLMProviderPreset.swift in Sources */,
 				16E02E6DB7C0C6824F80168C /* LanguageSupport.swift in Sources */,
 				222CE42E1B840F450B406F90 /* LatestRequestGate.swift in Sources */,
 				BEBCC5C76CD790F402EB80C3 /* MIMEMessage.swift in Sources */,
 				CCEE51674CCAA0CD857C2515 /* MailExtension.swift in Sources */,
-				33E835EFC66A029F8AA8D29D /* OpenAICompatibleEngine.swift in Sources */,
-				EE14DC69A41C05BA7AB633D1 /* OpenAIModelCatalog.swift in Sources */,
 				7749A10E43D4D5A487D04723 /* PopoverViewController.swift in Sources */,
 				DD0523E4388F4BE211980DF1 /* PurchasePolicy.swift in Sources */,
 				98F5F07337B17C305DC23E34 /* SecurityHandler.swift in Sources */,
@@ -453,8 +437,6 @@
 				A23509C8AF3BB009AF61BA0A /* TranslationStore.swift in Sources */,
 				F3B9A800662835159A0C099A /* TranslationTaskRegistry.swift in Sources */,
 				D2F0FA1BF3F1E541E1EC601F /* TranslatorConfig.swift in Sources */,
-				995C567C04383F2E4586AE35 /* VolcengineEngine.swift in Sources */,
-				9EB3822D2AD60CFB2F61B92B /* VolcengineSigner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,7 +444,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				92E8CFA16D3AA30E7991DA4A /* APIEndpoint.swift in Sources */,
 				6DFD9A8AF9E1BE5BE472CF9C /* AppleTranslationEngine.swift in Sources */,
 				655CC881E16D77B41D257047 /* ApplicationStatePolicy.swift in Sources */,
 				5B71157976594B24847D6059 /* BundleID.swift in Sources */,
@@ -470,12 +451,9 @@
 				DE16C192C4D74AD2B3DEAD2A /* EngineFactory.swift in Sources */,
 				B2DD49FF1349BDC6413143FB /* HTMLSegments.swift in Sources */,
 				C478D059993A238378BB956D /* HTMLText.swift in Sources */,
-				AFBD2F56300040EEB94B2E8E /* LLMProviderPreset.swift in Sources */,
 				A516C80FA103847689278804 /* LanguageSupport.swift in Sources */,
 				354B7BC6A278D8657D85CA6A /* LatestRequestGate.swift in Sources */,
 				0369CDE77EB25BA7912EBC70 /* MIMEMessage.swift in Sources */,
-				1F96A5F5930FC5F6CDBB3CAF /* OpenAICompatibleEngine.swift in Sources */,
-				FA08DC33FDEB6CAD9A1F1C68 /* OpenAIModelCatalog.swift in Sources */,
 				D2A5ECE1ADBDE2528F731634 /* PurchasePolicy.swift in Sources */,
 				7C251721DB34D13E7AAEF7D3 /* PurchaseView.swift in Sources */,
 				6C8004F6DC88DEF234E4778E /* SettingsViewController.swift in Sources */,
@@ -485,8 +463,6 @@
 				31E9307C919C92683D690485 /* TranslationEngine.swift in Sources */,
 				84D7E55CFB47424E3BB283DA /* TranslationPipeline.swift in Sources */,
 				66FF2DA08354569FBD12AA5E /* TranslatorConfig.swift in Sources */,
-				7B9ACE2AACA5AECF1E77F407 /* VolcengineEngine.swift in Sources */,
-				960B8C170C7CF3885A3CC1FB /* VolcengineSigner.swift in Sources */,
 				B28D6B2FC5075C32FE9F1932 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -626,7 +602,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
@@ -708,7 +684,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;

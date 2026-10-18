@@ -5,187 +5,101 @@
 # MailTranslator
 
 <p align="center">
-  macOS Mail translation extension with Apple Translation, Volcengine, and OpenAI-compatible LLM providers.<br>
-  为 macOS Mail 打造的翻译扩展，支持 Apple 系统翻译、火山翻译和 OpenAI 兼容 LLM。
+  Apple Translation-only edition for the Mac App Store.<br>
+  面向 Mac App Store 的 Apple 系统翻译专用版本。
 </p>
 
-> [English](#english) | [简体中文](#简体中文)
+> [简体中文](#简体中文) | [English](#english)
 
 ## 简体中文
 
-MailTranslator 是一个原生 macOS MailKit 扩展。阅读邮件时点击翻译，译文会以渐进式双语内容显示在原文下方；翻译任务支持停止、续译和只看原文。
+本 README 适用于 `codex/app-store` 分支。MailTranslator 是原生 macOS MailKit 扩展，在邮件原文下方渐进显示双语译文，支持停止、续译和切换回原文。
 
-### 功能
+此版本仅使用 **Apple 系统翻译**，无需 API Key。发行源码不包含第三方翻译服务端点、模型目录或密钥配置。需要多 LLM、火山引擎翻译或 Homebrew 安装的独立分发版，请查看 [`main` 分支](https://github.com/AllenYGY/MailTranslator/tree/main)。
 
-- **多翻译服务**
-  - Apple 系统翻译：设备端能力，适合无需配置 API 的场景。
-  - 火山翻译：使用火山引擎机器翻译 `TextList` 批量接口。
-  - OpenAI 兼容 LLM：支持 OpenAI、DeepSeek、Kimi、通义千问、豆包（火山方舟）、Ollama 和自定义兼容端点。
-- **渐进式双语阅读**：邮件分段并发翻译，每完成一批便刷新显示，不必等待全文完成。
-- **翻译控制**：翻译中可停止；完成后可继续未完成部分，也可切换为只看原文。
-- **独立 Provider 配置**：每个 LLM 预设分别保存 API 地址、API Key、模型和模型列表，切换服务不会覆盖其他服务的凭据。
-- **模型发现与手动输入**：兼容服务可通过 `GET /models` 获取模型；不提供标准目录的服务仍可直接输入模型 ID。
-- **本地缓存**：再次打开已经翻译过的邮件时优先使用本地结果。
+### 系统要求与设置
 
-### 系统要求
+- **macOS 26 或更高版本**，使用 Apple Mail。
+- 先在 **系统设置 > 通用 > 语言与地区 > 翻译语言** 中下载邮件的**源语言和目标语言**。语言组合须受 Apple 系统翻译支持；仅选择目标语言不等于已下载资源。[Apple 设置说明](https://support.apple.com/guide/mac-help/intl163/mac)
+- 打开 **MailTranslator**，选择目标语言并保存。
+- 在 **Mail > 设置 > 扩展** 中启用 MailTranslator 对应的邮件翻译扩展，然后打开邮件并点击翻译。
 
-- macOS 14 Sonoma 或更高版本
-- 使用源码构建时需要 Xcode Command Line Tools
+### 免费试用与永久解锁
 
-### 通过 Homebrew 安装
+- 在应用内明确点击“免费开始 7 天试用”，并完成 App Store 的免费领取，才会开始完整试用；下载或首次打开应用不会自动开始计时。
+- 试用通过**免费非消耗型 App 内购买**领取，每个 Apple 账户一次，自原始领取交易时间起持续 **7 天**。重新安装或恢复购买不会重置试用。
+- 永久解锁为**一次性人民币 6 元（CNY 6）**的非消耗型 App 内购买；实际付款金额以 App Store 所在地区显示为准。
+- **无订阅、无自动续费**。试用不会自动转为付费；到期后继续翻译需另行购买永久解锁。已有购买可通过“恢复购买”验证。
 
-```sh
-brew tap AllenYGY/tap
-brew trust allenygy/tap
-brew install --cask mailtranslator
-```
+### 隐私与支持
 
-`brew trust` 是 Homebrew 6 对第三方 Tap 的显式信任要求，只需执行一次。
+翻译使用 Apple 的 Translation 框架及已下载的语言资源。目标语言配置通过本机 App Group 在主应用和扩展之间共享；译文在本机缓存，当前没有自动过期清理。应用不向开发者服务器上传邮件、配置或缓存，也不集成广告、跟踪或分析 SDK。Apple 系统服务的数据处理不等同于应用自身的数据处理，详见[本版本隐私政策](docs/privacy-policy.md)。
 
-安装后：
+问题反馈与隐私支持：[MailTranslator Issues](https://github.com/AllenYGY/MailTranslator/issues)。请勿在公开 issue 中提交邮件正文或其他私人信息。
 
-1. 打开 **MailTranslator**，选择翻译服务并完成配置。
-2. 打开 **Mail > 设置 > 扩展**，启用“邮件翻译”。
-3. 在 Mail 中打开邮件并点击翻译操作。
+### 开发构建与 App Store 归档
 
-### 配置翻译服务
-
-#### Apple 系统翻译
-
-选择“Apple 系统翻译”即可使用，无需填写 Key。系统会在支持的语言组合中使用设备翻译能力。
-
-#### 火山翻译
-
-选择“火山翻译”，填写火山引擎控制台提供的 Access Key ID 和 Secret Access Key，并选择目标语言。
-
-#### OpenAI 兼容 LLM
-
-1. 选择 **LLM**，再选择预设服务或“自定义”。
-2. 填写 API 地址与 API Key。
-3. 点击“获取模型”，或直接填写模型 ID。
-4. 选择目标语言并保存。
-
-远程 API 地址必须使用 HTTPS。本机或私网服务可以使用 HTTP，例如 Ollama 的 `http://localhost:11434/v1`。
-
-### 隐私
-
-只有在你点击翻译后，当前邮件正文才会发送到你选择的翻译服务。Apple 系统翻译不需要配置第三方密钥；使用云端翻译或 LLM 时，请根据对应服务的隐私政策决定是否翻译敏感内容。
-
-### 从源码构建
+需要包含 macOS 26 SDK 的 Xcode；App Store 归档还需要正确的开发团队、签名和 App Group 配置。
 
 ```sh
-git clone https://github.com/AllenYGY/ExtentionforMail.git MailTranslator
+git clone --branch codex/app-store https://github.com/AllenYGY/MailTranslator.git
 cd MailTranslator
-
 ./test.sh
 ./build.sh
-./install.sh
 ```
 
-| 命令 | 作用 |
-| --- | --- |
-| `./test.sh` | 运行核心逻辑与设置界面命中测试。 |
-| `./build.sh` | 构建通用二进制应用到 `build/MailTranslator.app`。 |
-| `./install.sh` | 安装到 `/Applications` 并注册扩展；会重启 Mail。 |
+`./test.sh` 运行核心逻辑、App Store 版本配置与设置界面命中测试。`./build.sh` 以 `APP_STORE` 编译，生成 `build/MailTranslator.app` 通用二进制，**保留 StoreKit 授权门控**，仅用于本地开发，不是绕过购买的独立分发包，也不是 App Store 上传产物。本地签名本身不提供 App Store 授权。
 
-命令行调试工具：
+发行时在 Xcode 打开 `MailTranslator.xcodeproj`，选择 **MailTranslator** scheme 和 macOS 归档目标，执行 **Product > Archive**（Release）。在 Organizer 中验证归档，再通过 **Distribute App > App Store Connect** 上传。StoreKit 本地测试使用单独的 **StorePurchaseTests** scheme；本地测试交易不代表生产环境授权或商品已上线。
 
-```sh
-build/tmtest parse|segments|translate|rewrite <email.eml>
-```
-
-### 致谢
-
-- MIME 解析和 HTML 分段的基础实现参考 [raikkonien/mailTranslatePlugin](https://github.com/raikkonien/mailTranslatePlugin)（MIT License）。
-- 多 Provider 设计参考 [tisfeng/Easydict](https://github.com/tisfeng/Easydict)（GPL-3.0，仅参考设计，未复制代码）。
+本文说明分支的实现与构建流程，不确认 App Store 上架、审核通过或隐私标签提交状态。
 
 ## English
 
-MailTranslator is a native MailKit extension for macOS Mail. Click Translate while reading a message to show a progressive bilingual version below the original. Translation jobs can be stopped, continued, or switched back to the original-only view.
+This README covers the `codex/app-store` branch. MailTranslator is a native MailKit extension for macOS Mail. It progressively displays bilingual translations below the original message, with stop, continue and original-only controls.
 
-### Highlights
+This edition uses **Apple Translation only**, with no API keys. Its shipping source contains no third-party translation provider endpoints, model catalogs or credential configuration. For the direct-distribution edition with multiple LLM providers, Volcengine translation and Homebrew installation, see the [`main` branch](https://github.com/AllenYGY/MailTranslator/tree/main).
 
-- **Multiple translation providers**
-  - Apple Translation for on-device translation without API setup.
-  - Volcengine Machine Translation through the batch `TextList` API.
-  - OpenAI-compatible LLMs, including OpenAI, DeepSeek, Kimi, DashScope, Doubao Ark, Ollama, and custom compatible endpoints.
-- **Progressive bilingual reading**: message segments translate concurrently and appear as batches complete.
-- **Translation controls**: stop an active job, continue incomplete segments, or switch to the original-only view.
-- **Isolated provider profiles**: every LLM preset keeps its own endpoint, API key, selected model, and model catalog.
-- **Model discovery with manual fallback**: fetch models from `GET /models`, or enter a model ID directly when a provider has no standard catalog.
-- **Local cache**: previously translated messages reopen from local results when available.
+### Requirements and Setup
 
-### Requirements
+- **macOS 26 or later**, using Apple Mail.
+- First download **both the source and target languages** in **System Settings > General > Language & Region > Translation Languages**. Apple Translation must support the language pair; selecting a target language in the app does not download its resources. [Apple settings guide](https://support.apple.com/guide/mac-help/intl163/mac)
+- Open **MailTranslator**, choose the target language and save.
+- Enable the MailTranslator translation extension in **Mail > Settings > Extensions**, then open a message and invoke Translate.
 
-- macOS 14 Sonoma or later
-- Xcode Command Line Tools for source builds
+### Free Trial and Permanent Unlock
 
-### Install with Homebrew
+- Explicitly select **Start Free 7-Day Trial** in the app and complete the free App Store claim to begin full access. Downloading or first opening the app does not start the trial.
+- The trial is a **free non-consumable in-app purchase**, claimable once per Apple Account. It lasts **7 days** from the original claim transaction. Reinstalling or restoring purchases does not restart it.
+- Permanent unlock is a **one-time CNY 6 non-consumable in-app purchase**. The App Store price displayed for your region governs the actual payment.
+- **No subscription or automatic renewal.** The trial does not automatically become a paid purchase. Continuing translation after expiry requires a separate permanent unlock; use **Restore Purchases** to verify an existing purchase.
 
-```sh
-brew tap AllenYGY/tap
-brew trust allenygy/tap
-brew install --cask mailtranslator
-```
+### Privacy and Support
 
-Homebrew 6 requires an explicit one-time trust action for third-party taps.
+Translation uses Apple's Translation framework and downloaded language resources. Target-language settings are shared locally between the app and extension through an App Group. Translations are cached locally with no automatic expiry cleanup. The app does not upload messages, configuration or caches to developer servers and includes no advertising, tracking or analytics SDKs. Apple's system-service data handling is distinct from the app's own behavior; see this edition's [privacy policy](docs/privacy-policy.md).
 
-After installation:
+For help or privacy questions, use [MailTranslator Issues](https://github.com/AllenYGY/MailTranslator/issues). Do not post message content or other private information in public issues.
 
-1. Open **MailTranslator** and configure a translation provider.
-2. In **Mail > Settings > Extensions**, enable “Mail Translator”.
-3. Open a message in Mail and invoke the translation action.
+### Development Builds and App Store Archives
 
-### Configure a Provider
-
-#### Apple Translation
-
-Select **Apple Translation**. No key is required; the extension uses the translation capabilities available on the device.
-
-#### Volcengine Machine Translation
-
-Select **Volcengine Translation**, enter the Access Key ID and Secret Access Key from the Volcengine console, then choose the target language.
-
-#### OpenAI-Compatible LLM
-
-1. Select **LLM**, then choose a preset or **Custom**.
-2. Enter the API base URL and API key.
-3. Select **Fetch Models**, or enter a model ID directly.
-4. Choose a target language and save.
-
-Remote endpoints must use HTTPS. HTTP is allowed for local or private-network services, such as Ollama at `http://localhost:11434/v1`.
-
-### Privacy
-
-MailTranslator sends message content to a selected provider only after you request a translation. Apple Translation needs no third-party credentials. When using a cloud service or LLM, decide whether to translate sensitive content according to that provider's privacy policy.
-
-### Build from Source
+Use Xcode with the macOS 26 SDK. App Store archives also require the appropriate development team, signing and App Group configuration.
 
 ```sh
-git clone https://github.com/AllenYGY/ExtentionforMail.git MailTranslator
+git clone --branch codex/app-store https://github.com/AllenYGY/MailTranslator.git
 cd MailTranslator
-
 ./test.sh
 ./build.sh
-./install.sh
 ```
 
-| Command | Purpose |
-| --- | --- |
-| `./test.sh` | Runs the core logic and settings hit-testing checks. |
-| `./build.sh` | Builds a universal app at `build/MailTranslator.app`. |
-| `./install.sh` | Installs to `/Applications` and registers the extension; Mail restarts. |
+`./test.sh` runs core logic, App Store edition configuration and settings hit-testing checks. `./build.sh` compiles with `APP_STORE` and produces a universal `build/MailTranslator.app` **with StoreKit authorization gates intact**. It is a local development build, not a purchase-free direct-distribution package or an App Store upload artifact. Local signing alone does not grant App Store authorization.
 
-CLI debugging tool:
+For distribution, open `MailTranslator.xcodeproj` in Xcode, select the **MailTranslator** scheme and a macOS archive destination, and use **Product > Archive** (Release). Validate the archive in Organizer, then upload using **Distribute App > App Store Connect**. Use the separate **StorePurchaseTests** scheme for local StoreKit testing; local test transactions do not establish production entitlement or product availability.
 
-```sh
-build/tmtest parse|segments|translate|rewrite <email.eml>
-```
+This document describes the branch's implementation and build workflow, not confirmed App Store publication, review approval or privacy-label submission status.
 
-### Acknowledgements
+## Acknowledgements / 致谢
 
-- MIME parsing and HTML segmentation build on ideas from [raikkonien/mailTranslatePlugin](https://github.com/raikkonien/mailTranslatePlugin) (MIT License).
-- The multi-provider architecture takes design inspiration from [tisfeng/Easydict](https://github.com/tisfeng/Easydict) (GPL-3.0; no code copied).
+MIME parsing and HTML segmentation build on ideas from [raikkonien/mailTranslatePlugin](https://github.com/raikkonien/mailTranslatePlugin) (MIT License). / MIME 解析与 HTML 分段的基础实现参考该项目。
 
 ## License
 

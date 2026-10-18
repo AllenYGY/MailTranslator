@@ -58,7 +58,7 @@ final class PurchaseView: NSStackView {
         progress.isDisplayedWhenStopped = false
         addArrangedSubview(status)
         status.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        let disclosure = NSTextField(wrappingLabelWithString: "免费领取后可完整试用 7 天，每个 Apple 账户仅一次，恢复购买或重装不会重置。\n不自动续费；到期需另行一次性购买永久解锁，翻译服务费用另计。")
+        let disclosure = NSTextField(wrappingLabelWithString: "免费领取后可完整试用 7 天，每个 Apple 账户仅一次，恢复购买或重装不会重置。\n不自动续费；到期需另行一次性购买永久解锁。使用 Apple 系统翻译，无需 API 密钥。")
         disclosure.font = .systemFont(ofSize: 11)
         disclosure.textColor = .secondaryLabelColor
         addArrangedSubview(disclosure)
@@ -119,7 +119,7 @@ final class PurchaseView: NSStackView {
         case let .trial(until):
             summary.stringValue = "完整试用中"
             summary.textColor = .controlAccentColor
-            status.stringValue = "试用截至 \(until.formatted(date: .abbreviated, time: .shortened))\n永久解锁为一次性购买，翻译服务费用另计"
+            status.stringValue = "试用截至 \(until.formatted(date: .abbreviated, time: .shortened))\n永久解锁为一次性购买，无订阅"
         case .expired:
             summary.stringValue = "试用已结束"
             summary.textColor = .systemOrange
