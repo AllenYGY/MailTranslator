@@ -1,0 +1,138 @@
+[
+  {
+    "alpha" : false,
+    "build" : 4,
+    "capture" : "\/Users\/allenygy\/Documents\/ChatGPT\/MailTranslator\/docs\/app-store\/captures\/MailTranslator-mail-bilingual-20261011.png",
+    "crop" : [
+      0,
+      104,
+      2596,
+      856
+    ],
+    "file" : "screenshots\/zh-Hans\/01-bilingual.png",
+    "locale" : "zh-Hans",
+    "size" : [
+      2560,
+      1600
+    ]
+  },
+  {
+    "alpha" : false,
+    "build" : 4,
+    "capture" : "\/Users\/allenygy\/Documents\/ChatGPT\/MailTranslator\/docs\/app-store\/captures\/MailTranslator-mail-original-20261011.png",
+    "crop" : [
+      0,
+      104,
+      2596,
+      616
+    ],
+    "file" : "screenshots\/zh-Hans\/02-original.png",
+    "locale" : "zh-Hans",
+    "size" : [
+      2560,
+      1600
+    ]
+  },
+  {
+    "alpha" : false,
+    "build" : 4,
+    "capture" : "\/Users\/allenygy\/Documents\/ChatGPT\/MailTranslator\/docs\/app-store\/captures\/MailTranslator-llm-config-20261011.png",
+    "crop" : [
+      0,
+      64,
+      1440,
+      1360
+    ],
+    "file" : "screenshots\/zh-Hans\/03-providers.png",
+    "locale" : "zh-Hans",
+    "size" : [
+      2560,
+      1600
+    ]
+  },
+  {
+    "alpha" : false,
+    "build" : 4,
+    "capture" : "\/Users\/allenygy\/Documents\/ChatGPT\/MailTranslator\/docs\/app-store\/captures\/MailTranslator-capture-retry-20261011.png",
+    "crop" : [
+      0,
+      64,
+      1440,
+      1110
+    ],
+    "file" : "screenshots\/zh-Hans\/04-unlock.png",
+    "locale" : "zh-Hans",
+    "size" : [
+      2560,
+      1600
+    ]
+  },
+  {
+    "alpha" : false,
+    "build" : 4,
+    "capture" : "\/Users\/allenygy\/Documents\/ChatGPT\/MailTranslator\/docs\/app-store\/captures\/MailTranslator-mail-bilingual-20261011.png",
+    "crop" : [
+      0,
+      104,
+      2596,
+      856
+    ],
+    "file" : "screenshots\/en\/01-bilingual.png",
+    "locale" : "en",
+    "size" : [
+      2560,
+      1600
+    ]
+  },
+  {
+    "alpha" : false,
+    "build" : 4,
+    "capture" : "\/Users\/allenygy\/Documents\/ChatGPT\/MailTranslator\/docs\/app-store\/captures\/MailTranslator-mail-original-20261011.png",
+    "crop" : [
+      0,
+      104,
+      2596,
+      616
+    ],
+    "file" : "screenshots\/en\/02-original.png",
+    "locale" : "en",
+    "size" : [
+      2560,
+      1600
+    ]
+  },
+  {
+    "alpha" : false,
+    "build" : 4,
+    "capture" : "\/Users\/allenygy\/Documents\/ChatGPT\/MailTranslator\/docs\/app-store\/captures\/MailTranslator-llm-config-20261011.png",
+    "crop" : [
+      0,
+      64,
+      1440,
+      1360
+    ],
+    "file" : "screenshots\/en\/03-providers.png",
+    "locale" : "en",
+    "size" : [
+      2560,
+      1600
+    ]
+  },
+  {
+    "alpha" : false,
+    "build" : 4,
+    "capture" : "\/Users\/allenygy\/Documents\/ChatGPT\/MailTranslator\/docs\/app-store\/captures\/MailTranslator-capture-retry-20261011.png",
+    "crop" : [
+      0,
+      64,
+      1440,
+      1110
+    ],
+    "file" : "screenshots\/en\/04-unlock.png",
+    "locale" : "en",
+    "size" : [
+      2560,
+      1600
+    ]
+  }
+]

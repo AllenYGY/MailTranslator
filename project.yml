@@ -1,0 +1,98 @@
+name: MailTranslator
+options:
+  deploymentTarget:
+    macOS: "14.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    DEVELOPMENT_TEAM: A5V794JT7G
+    CODE_SIGN_STYLE: Automatic
+    REGISTER_APP_GROUPS: YES
+    SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) APP_STORE"
+    OTHER_LDFLAGS: "$(inherited) -weak_framework Translation"
+    ENABLE_HARDENED_RUNTIME: YES
+    ARCHS: "arm64 x86_64"
+    ONLY_ACTIVE_ARCH: NO
+targets:
+  MailTranslator:
+    type: application
+    platform: macOS
+    attributes:
+      SystemCapabilities:
+        com.apple.ApplicationGroups.iOS:
+          enabled: 1
+    sources:
+      - Sources/App
+      - Sources/Core
+      - Sources/Engine
+      - Sources/Providers
+      - path: Resources/AppIcon.icns
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.allenygy.mailtranslator
+        INFOPLIST_FILE: Resources/App-Info.plist
+        CODE_SIGN_ENTITLEMENTS: Resources/AppStore-App.entitlements
+    dependencies:
+      - target: MailTranslatorExtension
+        embed: true
+  MailTranslatorExtension:
+    type: app-extension
+    platform: macOS
+    attributes:
+      SystemCapabilities:
+        com.apple.ApplicationGroups.iOS:
+          enabled: 1
+    sources:
+      - Sources/Extension
+      - Sources/Core
+      - Sources/Engine
+      - Sources/Providers
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.allenygy.mailtranslator.extension
+        INFOPLIST_FILE: Resources/Ext-Info.plist
+        CODE_SIGN_ENTITLEMENTS: Resources/AppStore-Extension.entitlements
+        APPLICATION_EXTENSION_API_ONLY: YES
+        SKIP_INSTALL: YES
+        OTHER_LDFLAGS: "$(inherited) -weak_framework Translation -e _NSExtensionMain"
+    dependencies:
+      - sdk: MailKit.framework
+  StorePurchaseTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - Sources/Core/BundleID.swift
+      - Sources/Core/PurchasePolicy.swift
+      - Sources/Core/StorePurchaseAccess.swift
+      - Tests/StorePurchaseTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.allenygy.mailtranslator.storetests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/MailTranslator.app/Contents/MacOS/MailTranslator"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) STOREKIT_LOCAL_TESTING"
+    dependencies:
+      - target: MailTranslator
+      - sdk: StoreKit.framework
+      - sdk: StoreKitTest.framework
+schemes:
+  MailTranslator:
+    build:
+      targets:
+        MailTranslator: all
+    archive:
+      config: Release
+  StorePurchaseTests:
+    build:
+      targets:
+        MailTranslator: all
+        StorePurchaseTests: all
+    run:
+      config: Debug
+      executable: MailTranslator
+      storeKitConfiguration: Resources/MailTranslator.storekit
+    test:
+      targets:
+        - StorePurchaseTests

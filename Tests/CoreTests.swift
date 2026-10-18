@@ -98,6 +98,16 @@ struct CoreTests {
             }
         }
 
+        let sharedRoot = URL(fileURLWithPath: "/tmp/mailtranslator-test-group")
+        let sharedConfig = try SharedConfiguration.url(in: sharedRoot)
+        expect(sharedConfig.path == "/tmp/mailtranslator-test-group/Library/Application Support/MailTranslator/config.json",
+               "Shared configuration must live inside the App Group")
+        do {
+            _ = try SharedConfiguration.url(in: nil)
+            expect(false, "A missing App Group must not silently use a private container")
+        } catch SharedConfiguration.AccessError.unavailable {
+        }
+
         // MARK: APIEndpoint
 
         let remote = try APIEndpoint.url(from: "https://api.example.com/v1")
@@ -730,6 +740,92 @@ struct CoreTests {
         refreshExecutor.completeNext()
 
         // MARK: 结果
+
+        let purchaseDate = Date(timeIntervalSince1970: 1_700_000_000)
+        let trialEnd = purchaseDate.addingTimeInterval(7 * 24 * 60 * 60)
+        let appPurchase = PurchasePolicy.AppRecord(
+            bundleID: BundleID.app, purchasedAt: purchaseDate, revoked: false, trusted: true
+        )
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, now: purchaseDate) == .trial(until: trialEnd), "首次已验证下载应获得七天试用")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, now: trialEnd) == .expired, "七天边界必须结束试用")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, now: trialEnd.addingTimeInterval(-1)).canTranslate, "试用最后一秒可翻译")
+        expect(PurchasePolicy.evaluate(app: nil, unlock: nil, now: purchaseDate) == .unavailable, "无凭证不得启动本地试用")
+        expect(PurchasePolicy.evaluate(app: .init(bundleID: "other", purchasedAt: purchaseDate, revoked: false, trusted: true), unlock: nil, now: purchaseDate) == .unavailable, "其他应用凭证必须拒绝")
+        expect(PurchasePolicy.evaluate(app: .init(bundleID: BundleID.app, purchasedAt: purchaseDate, revoked: false, trusted: false), unlock: nil, now: purchaseDate) == .unavailable, "未验证下载必须拒绝")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: nil, now: purchaseDate.addingTimeInterval(-1)) == .unavailable, "未来下载日期不能延长试用")
+        let unlock = PurchasePolicy.UnlockRecord(productID: PurchasePolicy.productID, nonConsumable: true, revoked: false, trusted: true)
+        expect(PurchasePolicy.evaluate(app: nil, unlock: unlock, now: trialEnd) == .unlocked, "已验证永久购买不依赖试用凭证")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: PurchasePolicy.productID, nonConsumable: true, revoked: true, trusted: true), now: trialEnd) == .expired, "退款应撤销永久权限")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: "other", nonConsumable: true, revoked: false, trusted: true), now: trialEnd) == .expired, "其他商品不能解锁")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: PurchasePolicy.productID, nonConsumable: false, revoked: false, trusted: true), now: trialEnd) == .expired, "错误商品类型不能解锁")
+        expect(PurchasePolicy.evaluate(app: appPurchase, unlock: .init(productID: PurchasePolicy.productID, nonConsumable: true, revoked: false, trusted: false), now: trialEnd) == .expired, "未验证购买不能解锁")
+        expect(PurchasePolicy.evaluate(app: .init(bundleID: BundleID.app, purchasedAt: purchaseDate, revoked: true, trusted: true), unlock: nil, now: purchaseDate) == .unavailable, "撤销应用购买不能试用")
+
+        #if APP_STORE
+        let storeResult: Int = try await StoreRequest.run(seconds: 1) { 42 }
+        expect(storeResult == 42, "App Store 请求应返回结果")
+        let timeoutStart = Date()
+        do {
+            let _: Int = try await StoreRequest.run(seconds: 0.02) {
+                // Simulate a StoreKit operation that doesn't promptly respond to cancellation.
+                await withCheckedContinuation { continuation in
+                    DispatchQueue.global().asyncAfter(deadline: .now() + 0.15) {
+                        continuation.resume(returning: 7)
+                    }
+                }
+            }
+            expect(false, "超时请求不得返回成功")
+        } catch {
+            expect(Date().timeIntervalSince(timeoutStart) < 0.12, "超时不应等待底层 StoreKit 请求结束")
+        }
+        try await Task.sleep(nanoseconds: 200_000_000)
+        expect(!StorePurchaseAccess.accepts(.xcode), "正式授权判断不得接受本地 Xcode 凭证")
+        expect(StorePurchaseAccess.accepts(.sandbox), "App Store 沙盒应可测试")
+
+        var restoreSynchronizations = 0
+        let alreadyRestored = try await StorePurchaseAccess.restore(
+            query: { .unlocked },
+            synchronize: { restoreSynchronizations += 1 })
+        expect(alreadyRestored == .unlocked, "恢复应使用已验证的永久购买")
+        expect(restoreSynchronizations == 0, "已有购买不得强制弹出 Apple 登录框")
+
+        var restoreQueries = 0
+        let recovered = try await StorePurchaseAccess.restore(
+            query: {
+                restoreQueries += 1
+                return restoreQueries == 1 ? .expired : .unlocked
+            },
+            synchronize: { restoreSynchronizations += 1 })
+        expect(recovered == .unlocked && restoreQueries == 2, "同步完成后应重新验证购买")
+        expect(restoreSynchronizations == 1, "缺失永久购买时应请求一次同步")
+
+        var cancelledQueries = 0
+        do {
+            _ = try await StorePurchaseAccess.restore(
+                query: { cancelledQueries += 1; return .expired },
+                synchronize: { throw CancellationError() })
+            expect(false, "取消登录不得报告恢复成功")
+        } catch is CancellationError {
+            expect(cancelledQueries == 1, "取消登录不得伪造新的授权")
+        }
+
+        let noPurchase = try await StorePurchaseAccess.restore(
+            query: { .expired }, synchronize: {})
+        expect(noPurchase == .expired, "同步完成但没有购买不得解锁")
+
+        var slowLoginCompleted = false
+        do {
+            let afterLogin = try await StorePurchaseAccess.restore(
+                query: { slowLoginCompleted ? .unlocked : .expired },
+                synchronize: {
+                    try await Task.sleep(nanoseconds: 31_000_000_000)
+                    slowLoginCompleted = true
+                })
+            expect(afterLogin == .unlocked, "恢复应等待超过三十秒的 Apple 登录完成")
+        } catch {
+            expect(false, "等待用户登录时不得提前报告 App Store 超时")
+        }
+        #endif
 
         if failureCount > 0 {
             fputs("\(failureCount) 个断言失败\n", stderr)

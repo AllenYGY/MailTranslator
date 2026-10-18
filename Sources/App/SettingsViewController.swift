@@ -12,6 +12,13 @@ private enum SettingsValidationError: LocalizedError {
 
 @MainActor
 final class SettingsViewController: NSViewController, NSComboBoxDelegate {
+    static var initialSize: NSSize {
+        #if APP_STORE
+        return NSSize(width: 720, height: 680)
+        #else
+        return NSSize(width: 720, height: 550)
+        #endif
+    }
     private let targetPopup = NSPopUpButton()
     private let providerControl = NSSegmentedControl()
 
@@ -48,9 +55,15 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
     private var providerHeightConstraint: NSLayoutConstraint!
 
     private var configURL: URL {
-        FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(
+        get throws {
+        #if APP_STORE
+        return try SharedConfiguration.url()
+        #else
+        return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(
             "Library/Containers/\(BundleID.extension_)/Data/Library/Application Support/MailTranslator/config.json"
         )
+        #endif
+        }
     }
 
     deinit {
@@ -59,7 +72,7 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
     }
 
     override func loadView() {
-        view = NSView(frame: NSRect(x: 0, y: 0, width: 660, height: 500))
+        view = NSView(frame: NSRect(origin: .zero, size: Self.initialSize))
         view.wantsLayer = true
         configureControls()
         buildLayout()
@@ -84,6 +97,7 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
             providerControl.setWidth(0, forSegment: index)
         }
         providerControl.trackingMode = .selectOne
+        providerControl.segmentStyle = .rounded
         providerControl.isEnabled = true
         providerControl.target = self
         providerControl.action = #selector(providerSelectionCommitted(_:))
@@ -95,11 +109,14 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
         presetPopup.action = #selector(presetSelectionCommitted(_:))
 
         openAIBaseField.placeholderString = "https://api.example.com/v1"
+        openAIBaseField.identifier = NSUserInterfaceItemIdentifier("api-url")
+        openAIBaseField.setAccessibilityLabel("API 地址")
         openAIBaseField.isEditable = true
         openAIBaseField.isSelectable = true
         openAIBaseField.isEnabled = true
         openAIBaseField.delegate = self
         openAIKeyField.placeholderString = "API Key，本地服务可留空"
+        openAIKeyField.setAccessibilityLabel("API Key")
         openAIKeyField.isEditable = true
         openAIKeyField.isSelectable = true
         openAIKeyField.isEnabled = true
@@ -130,6 +147,13 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
         volcAKField.delegate = self
         volcSKField.placeholderString = "Secret Access Key"
         volcSKField.delegate = self
+        for field in [openAIBaseField, openAIKeyField, volcAKField, volcSKField] {
+            field.bezelStyle = .roundedBezel
+            field.heightAnchor.constraint(greaterThanOrEqualToConstant: 28).isActive = true
+        }
+        openAIModelCombo.heightAnchor.constraint(greaterThanOrEqualToConstant: 28).isActive = true
+        targetPopup.heightAnchor.constraint(greaterThanOrEqualToConstant: 28).isActive = true
+        presetPopup.heightAnchor.constraint(greaterThanOrEqualToConstant: 28).isActive = true
 
         statusImage.image = NSImage(systemSymbolName: "info.circle", accessibilityDescription: nil)
         statusImage.contentTintColor = .secondaryLabelColor
@@ -148,6 +172,7 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
         saveButton.imagePosition = .imageLeading
         saveButton.bezelStyle = .rounded
         saveButton.keyEquivalent = "\r"
+        saveButton.bezelColor = .controlAccentColor
         saveButton.target = self
         saveButton.action = #selector(saveConfig)
         saveButton.isEnabled = false
@@ -183,8 +208,19 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
         buildProviderViews()
         root.addArrangedSubview(providerContainer)
         providerContainer.widthAnchor.constraint(equalTo: root.widthAnchor).isActive = true
-        providerHeightConstraint = providerContainer.heightAnchor.constraint(equalToConstant: 180)
+        providerContainer.identifier = NSUserInterfaceItemIdentifier("service-configuration")
+        providerHeightConstraint = providerContainer.heightAnchor.constraint(equalToConstant: 196)
         providerHeightConstraint.isActive = true
+
+        #if APP_STORE
+        let purchaseSeparator = NSBox()
+        purchaseSeparator.boxType = .separator
+        root.addArrangedSubview(purchaseSeparator)
+        purchaseSeparator.widthAnchor.constraint(equalTo: root.widthAnchor).isActive = true
+        let purchaseView = PurchaseView()
+        root.addArrangedSubview(purchaseView)
+        purchaseView.widthAnchor.constraint(equalTo: root.widthAnchor).isActive = true
+        #endif
 
         let spacer = NSView()
         root.addArrangedSubview(spacer)
@@ -211,7 +247,7 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
 
         let title = NSTextField(labelWithString: "MailTranslator")
         title.font = .systemFont(ofSize: 20, weight: .semibold)
-        let subtitle = NSTextField(labelWithString: "为 Apple Mail 配置翻译服务")
+        let subtitle = NSTextField(labelWithString: "Mail 邮件翻译")
         subtitle.font = .systemFont(ofSize: 12)
         subtitle.textColor = .secondaryLabelColor
 
@@ -263,9 +299,7 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
         appleIcon.image = NSImage(systemSymbolName: "lock.shield", accessibilityDescription: nil)
         appleIcon.contentTintColor = .systemGreen
         appleIcon.setContentHuggingPriority(.required, for: .horizontal)
-        let appleText = NSTextField(
-            wrappingLabelWithString: "使用 macOS 本地翻译能力，不需要 API Key。首次使用某种语言时，系统可能下载对应语言资源。"
-        )
+        let appleText = NSTextField(wrappingLabelWithString: "Apple 翻译 · macOS 26 或更高版本\n本地处理 · 无需 API Key")
         appleText.textColor = .secondaryLabelColor
         let appleStack = NSStackView(views: [appleIcon, appleText])
         appleStack.orientation = .horizontal
@@ -315,7 +349,7 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
         }
         let grid = NSGridView(views: views)
         grid.columnSpacing = 12
-        grid.rowSpacing = 10
+        grid.rowSpacing = 12
         grid.column(at: 0).width = 82
         grid.column(at: 0).xPlacement = .trailing
         grid.column(at: 1).xPlacement = .fill
@@ -360,7 +394,11 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
     }
 
     private func loadInitialConfig() {
-        loadedConfig = ConfigFile.load(TranslatorConfig.self, from: configURL) ?? .default
+        do {
+            loadedConfig = ConfigFile.load(TranslatorConfig.self, from: try configURL) ?? .default
+        } catch {
+            setStatus(error.localizedDescription, tone: .error)
+        }
         loadLLMProfile(loadedConfig.activeLLMPreset)
         volcAKField.stringValue = loadedConfig.volcengine.accessKeyID
         volcSKField.stringValue = loadedConfig.volcengine.secretAccessKey
@@ -427,23 +465,28 @@ final class SettingsViewController: NSViewController, NSComboBoxDelegate {
 
     private var providerPanelHeight: CGFloat {
         switch currentProvider {
-        case .openAICompatible: return 180
+        case .openAICompatible: return 196
         case .volcengine: return 85
         case .apple: return 60
         }
     }
 
     private var preferredWindowHeight: CGFloat {
+        #if APP_STORE
+        let purchaseHeight: CGFloat = 130
+        #else
+        let purchaseHeight: CGFloat = 0
+        #endif
         switch currentProvider {
-        case .openAICompatible: return 500
-        case .volcengine: return 405
-        case .apple: return 380
+        case .openAICompatible: return 550 + purchaseHeight
+        case .volcengine: return 440 + purchaseHeight
+        case .apple: return 425 + purchaseHeight
         }
     }
 
     private func resizeWindowForProvider(animated: Bool) {
         guard let window = view.window else { return }
-        window.contentMinSize = NSSize(width: 620, height: preferredWindowHeight)
+        window.contentMinSize = NSSize(width: 660, height: preferredWindowHeight)
         let currentFrame = window.frame
         var contentRect = window.contentRect(forFrameRect: currentFrame)
         contentRect.size.height = preferredWindowHeight

@@ -1,0 +1,32 @@
+{
+  "identifier": "MailTranslatorLocalTesting",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "6.00",
+      "familyShareable": false,
+      "internalID": "1000001",
+      "localizations": [
+        {
+          "description": "Permanently unlock translation after the seven-day trial.",
+          "displayName": "MailTranslator Permanent Unlock",
+          "locale": "en_US"
+        },
+        {
+          "description": "七天试用后永久解锁邮件翻译。",
+          "displayName": "MailTranslator 永久解锁",
+          "locale": "zh_CN"
+        }
+      ],
+      "productID": "io.github.allenygy.mailtranslator.unlock",
+      "referenceName": "MailTranslator Permanent Unlock",
+      "type": "NonConsumable"
+    }
+  ],
+  "settings": {
+    "_failTransactionsEnabled": false,
+    "_storeKitErrors": []
+  },
+  "subscriptionGroups": [],
+  "version": { "major": 3, "minor": 0 }
+}

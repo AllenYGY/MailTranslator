@@ -15,6 +15,11 @@ final class SecurityHandler: NSObject, MEMessageSecurityHandler {
     private let store = TranslationStore.shared
     private lazy var cache = TranslationCache(directory: Settings.cacheDirectory)
     private let taskRegistry = TranslationTaskRegistry()
+    #if APP_STORE
+    private let accessLock = NSLock()
+    private var accessChecks: Set<String> = []
+    private var accessNotices: [String: String] = [:]
+    #endif
     private static let refreshCoordinator = TranslationRefreshCoordinator(
         execute: { _, completion in
             DispatchQueue.main.async {
@@ -215,6 +220,48 @@ final class SecurityHandler: NSObject, MEMessageSecurityHandler {
                 break
             }
 
+            #if APP_STORE
+            accessLock.lock()
+            let inserted = accessChecks.insert(key).inserted
+            if inserted { accessNotices[key] = "正在验证翻译授权…" }
+            accessLock.unlock()
+            guard inserted else { return }
+            let previousGeneration = Self.generation(in: store.state(for: key))
+            Self.refreshCoordinator.request(.initial)
+            Task { @MainActor [self] in
+                let entitlement = await StorePurchaseAccess.state()
+                self.updateAccessCheck(key: key, entitlement: entitlement)
+                guard entitlement.canTranslate else {
+                    Self.refreshCoordinator.request(.terminal)
+                    return
+                }
+                guard previousGeneration == Self.generation(in: self.store.state(for: key)) else { return }
+                if case .translating = self.store.state(for: key) { return }
+                self.beginTranslation(key: key, action: action)
+            }
+            #else
+            beginTranslation(key: key, action: action)
+            #endif
+        }
+    }
+
+    #if APP_STORE
+    private func updateAccessCheck(key: String, entitlement: PurchasePolicy.State) {
+        accessLock.lock()
+        defer { accessLock.unlock() }
+        accessChecks.remove(key)
+        if entitlement.canTranslate {
+            accessNotices.removeValue(forKey: key)
+        } else {
+            accessNotices[key] = entitlement == .expired
+                ? "7 天试用已结束，请打开 MailTranslator 永久解锁"
+                : "无法验证授权，请打开 MailTranslator 恢复购买后重试"
+        }
+    }
+    #endif
+
+    private func beginTranslation(key: String, action: TranslationActionContext.Action) {
+
             let lifecycleAction = Self.lifecycleAction(for: action)
             if lifecycleAction == .retranslate {
                 store.reset(key: key)
@@ -290,7 +337,6 @@ final class SecurityHandler: NSObject, MEMessageSecurityHandler {
                 }
                 _ = self.taskRegistry.attach(task, to: handle)
             })
-        }
     }
 
     private func stopTranslation(key: String) {
@@ -443,8 +489,15 @@ final class SecurityHandler: NSObject, MEMessageSecurityHandler {
         )
         let actionTitle = Self.actionTitle(for: primaryAction)
         let actionContext = store.present(key: key, action: primaryAction)
+        #if APP_STORE
+        accessLock.lock()
+        let accessTitle = accessNotices[key]
+        accessLock.unlock()
+        #else
+        let accessTitle: String? = nil
+        #endif
         let banner = MEDecodedMessageBanner(
-            title: title,
+            title: accessTitle ?? title,
             primaryActionTitle: actionTitle,
             dismissable: true
         )

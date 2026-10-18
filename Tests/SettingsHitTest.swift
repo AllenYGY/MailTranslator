@@ -8,34 +8,44 @@ struct SettingsHitTest {
         _ = NSApplication.shared
         let controller = SettingsViewController()
         let window = NSWindow(contentViewController: controller)
-        window.setContentSize(NSSize(width: 660, height: 500))
+        defer { window.orderOut(nil) }
+        #if APP_STORE
+        window.setContentSize(NSSize(width: 660, height: 680))
+        #else
+        window.setContentSize(NSSize(width: 660, height: 550))
+        #endif
         let root = controller.view
         root.layoutSubtreeIfNeeded()
 
         guard let providerContainer = descendants(of: root).first(where: {
-            $0.subviews.count == ProviderKind.allCases.count
-                && $0.subviews.allSatisfy { type(of: $0) == NSView.self }
-        }) else {
+            $0.identifier?.rawValue == "service-configuration"
+        }), let providerControl = descendants(of: root).compactMap({ $0 as? NSSegmentedControl }).first else {
             fputs("FAIL: 找不到服务配置容器\n", stderr)
             exit(1)
         }
-        for (index, providerView) in providerContainer.subviews.enumerated() {
-            providerView.isHidden = index != 0
-        }
-        providerContainer.constraints.first(where: {
-            $0.firstItem === providerContainer && $0.firstAttribute == .height
-        })?.constant = 180
-        root.layoutSubtreeIfNeeded()
-
-        let failures = descendants(of: root)
+        var failures: [String] = []
+        for index in ProviderKind.allCases.indices {
+            providerControl.selectedSegment = index
+            providerControl.performClick(nil)
+            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+            root.layoutSubtreeIfNeeded()
+            if !providerContainer.subviews.enumerated().allSatisfy({ $0.element.isHidden == ($0.offset != index) }) {
+                failures.append("引擎 \(index) 切换失败")
+            }
+            failures += descendants(of: root)
             .compactMap { $0 as? NSControl }
             .filter { !isEffectivelyHidden($0) }
             .compactMap { control -> String? in
                 let center = NSPoint(x: control.bounds.midX, y: control.bounds.midY)
                 let point = root.convert(center, from: control)
+                let rect = root.convert(control.bounds, from: control)
+                if !root.bounds.insetBy(dx: -1, dy: -1).contains(rect) || rect.width <= 0 || rect.height <= 0 {
+                    return "引擎 \(index)：\(type(of: control)) 超出窗口"
+                }
                 guard root.hitTest(point) !== control else { return nil }
-                return String(describing: type(of: control))
+                return "引擎 \(index)：\(type(of: control)) 点击被遮挡"
             }
+        }
 
         guard failures.isEmpty else {
             fputs(

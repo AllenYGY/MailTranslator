@@ -1,0 +1,22 @@
+From: Alice Example <alice@example.com>
+To: Bob Example <bob@example.com>
+Subject: Release acceptance - fictional project meeting
+Message-ID: <release-acceptance-20261011-01@example.com>
+Date: Sun, 11 Oct 2026 12:00:00 +0800
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<html><body>
+<p>Hello Bob, this is a fictional project meeting used to test email translation. No customer information or confidential material is included.</p>
+<p>Our planning meeting is scheduled for Tuesday at ten in the morning. Please bring the project notes and a short summary of the remaining work.</p>
+<p>The design team will demonstrate the new navigation flow. We would like to review keyboard access, clear loading feedback, and the behavior when a user cancels an operation.</p>
+<p>The engineering team has prepared a separate test environment. It contains example accounts and sample messages, so everyone can explore the workflow without changing production data.</p>
+<p>We will start with a short demonstration and then discuss the release checklist. Each participant should identify any missing tests and describe how those tests can be verified.</p>
+<p>Please pay particular attention to interrupted requests. If a task is stopped halfway through, completed work should remain visible and continuing the task should not duplicate earlier results.</p>
+<p>We also need to confirm that returning to the original message does not discard the translated text. Readers should be able to switch views while staying on the same message.</p>
+<p>After the meeting, Alice will collect the notes into a shared document. The document will contain only fictional examples and general observations about the product interface.</p>
+<p>The next review is planned for Thursday afternoon. We will compare the results across supported translation engines and note any differences in formatting or response time.</p>
+<p>Thank you for helping with this test. Please do not send passwords, API keys, personal correspondence, or payment details in your feedback.</p>
+<p>Best regards,<br>Alice Example</p>
+</body></html>

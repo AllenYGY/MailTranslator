@@ -11,8 +11,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.title = "MailTranslator"
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
         window.isRestorable = ApplicationStatePolicy.restoresSettingsControls
-        window.setContentSize(NSSize(width: 660, height: 500))
-        window.contentMinSize = NSSize(width: 620, height: 500)
+        window.setContentSize(SettingsViewController.initialSize)
+        window.contentMinSize = NSSize(width: 660, height: SettingsViewController.initialSize.height)
         window.center()
         window.makeKeyAndOrderFront(nil)
         self.window = window

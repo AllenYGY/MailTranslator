@@ -4,3 +4,4 @@
 */.superpowers/*
 research/*
 build/
+*.xcodeproj/xcuserdata/

@@ -6,11 +6,25 @@ enum Settings {
 
     private static let lock = NSLock()
     private static var cache: (config: TranslatorConfig, mtime: Date?)?
-    private static let fileURL = ConfigFile.url(
+    private static let legacyFileURL = ConfigFile.url(
         inApplicationSupport: FileManager.default.urls(
             for: .applicationSupportDirectory, in: .userDomainMask
         )[0]
     )
+
+    private static var fileURL: URL? {
+        #if APP_STORE
+        guard let shared = try? SharedConfiguration.url() else { return nil }
+        // The extension can migrate its own container without host access to it.
+        if !FileManager.default.fileExists(atPath: shared.path),
+           let legacy = ConfigFile.load(TranslatorConfig.self, from: legacyFileURL) {
+            try? ConfigFile.save(legacy, to: shared)
+        }
+        return shared
+        #else
+        return legacyFileURL
+        #endif
+    }
 
     static var current: TranslatorConfig {
         if let override = environmentConfig() {
@@ -18,6 +32,7 @@ enum Settings {
         }
         lock.lock()
         defer { lock.unlock() }
+        guard let fileURL else { return .default }
         let mtime = ConfigFile.modificationDate(of: fileURL)
         if let cache, cache.mtime == mtime {
             return cache.config
