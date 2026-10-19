@@ -7,10 +7,23 @@ runbook; local verification below is distinct from Cloud execution.
 
 On October 19, the user completed initial Xcode onboarding. App Store Connect now
 lists MailTranslator as a Cloud product (`3b442a97-3af7-41c3-810c-fa06646aee45`)
-and reports Cloud Build 1 in progress. The generated shared Xcode Cloud manifest
-is included with the repository prerequisites. A successful Cloud build has not
-yet been observed. The fixed project/tests must be pushed before starting the
-verification run, because the previous remote commit still had a stale project.
+and completed checkout, signing, archive, and App Store delivery in builds 7 and 8
+from `dace968`. The first run failed on stale project references; the regenerated
+project and bundled test fixture fixed that prerequisite. Build 7 tests passed
+9/10, with a ten-minute timeout in the simulated failed-purchase case.
+
+The workflow is `MailTranslator App Store`, ID
+`9CDE8C77-B1E3-4CF4-9813-E820414A7C3A`. Manual and push triggers select only
+`codex/app-store`; clean builds, required macOS tests, and an App Store Connect
+archive use the main MailTranslator scheme. There are no distribution post-actions.
+Xcode is pinned to release 27.1 (27A9275), with stable macOS 27.0.1 (26A434).
+Build 9 temporarily used macOS 27.2 beta 4 (26B5112a) for diagnosis: Apple's
+[macOS release notes](https://developer.apple.com/go/?id=macos-27_2-rn)
+report a fix for SKTestSession failed purchases showing dialogs despite dialog
+suppression (184255116). The same case still waited in that environment, so the
+release-note match does not establish the cause. The workflow was restored to
+the stable image; no test was weakened or skipped. Do not switch to a beta Xcode
+SDK for shipping. Current Cloud results are in `2026-10-19-apple-only-release.md`.
 
 Repository ADMIN permission was verified. The old `ExtentionforMail` remote was
 updated to the canonical `git@github.com:AllenYGY/MailTranslator.git` during
@@ -58,7 +71,7 @@ must first be committed and pushed by the integration owner so Cloud can see the
 3. Name the workflow `MailTranslator App Store Archive`. In **Environment**,
    select a supported stable Xcode with the macOS 26 SDK or newer and a compatible
    macOS 26-or-newer image. Local verification used Xcode 27.1 (27A9275); Cloud
-   availability of that exact version was not inspected. Enable **Clean** for
+   27.1 is now explicitly configured in the live workflow. Enable **Clean** for
    release archives. No custom environment variables or secrets are required.
 4. Remove the default branch-change trigger for `main`. For the first smoke
    build, leave automatic start conditions unset and select `codex/app-store`

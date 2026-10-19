@@ -15,7 +15,8 @@ This section supersedes older provider and original-download trial descriptions 
   project with the Apple-only sources for clean checkout/Cloud builds.
   Its archive at `/tmp/MailTranslator-Build6.xcarchive` succeeded, both executable
   slices are universal, and strict deep signature validation passed. Xcode reported
-  upload success at 01:03 Hong Kong time on October 19. Apple processing is pending.
+  upload success at 01:03 Hong Kong time on October 19. Apple processed it, and
+  the installed TestFlight app was independently verified to report build 6.
 - Trial now starts after explicitly claiming a free non-consumable IAP, product
   `io.github.allenygy.mailtranslator.trial7` (Apple ID `6824203213`). Its signed
   original transaction date starts exactly 604800 seconds. Restore/reinstall does
@@ -38,25 +39,31 @@ This section supersedes older provider and original-download trial descriptions 
   bundle with the original source checkout unavailable, matching Cloud test phases.
   Result: `/tmp/MailTranslator-CloudPrereqs-GREEN.QbMVcx/Tests-Assertions.xcresult`.
   `./build.sh` succeeds with Store gates and Store entitlements for both targets.
-- The free trial item is complete and was added to the review draft (Ready for
-  Review), not submitted independently. App Privacy now shows Data Not Collected,
+- The app, free trial, and permanent unlock were submitted together on October 19
+  at 15:58 Hong Kong time. Submission `e6d9f8d9-1a08-4212-8898-83766c3b0577`
+  shows all three items Waiting for Review. Manual release remains selected.
+  App Privacy now shows Data Not Collected,
   matching the Apple-only implementation and Apple's exclusion of on-device data
-  from collection. The public policy URL still needs to point to this edition's
-  policy after pushing it. Direct-distribution privacy remains on `main`.
+  from collection. Both public policy localizations point to the published
+  `codex/app-store/docs/privacy-policy.md`. Direct privacy remains on `main`.
 - Xcode Cloud setup is documented in `docs/releases/xcode-cloud.md`. Initial
   onboarding was completed by the user in Xcode while native CUA capture remains
   blocked by `SCStreamError -3811`. The web team page now lists MailTranslator
-  (`3b442a97-3af7-41c3-810c-fa06646aee45`), Cloud Build 1 in progress. This first
-  run predates the pushed project repair; no Cloud build success is claimed yet.
+  (`3b442a97-3af7-41c3-810c-fa06646aee45`). Cloud archives 7 and 8 succeeded.
+  Build 7 tests passed 9/10; the simulated failed-purchase test timed out.
+  Cloud test verification continues; see the current acceptance report.
 - Cloud authorization troubleshooting confirmed the signed-in GitHub identity has
   ADMIN permission on `AllenYGY/MailTranslator`. Local `origin` still pointed at
   the renamed `AllenYGY/ExtentionforMail`; updated it to
   `git@github.com:AllenYGY/MailTranslator.git` and verified remote branch access.
-  This removes a repository-identity mismatch; GitHub App access and a successful
-  Cloud build still require verification.
-- Real TestFlight trial claim/restore and build 6 Mail translation remain unverified.
+  Cloud checkout and signing now succeed. Both `codex/app-store` and
+  `codex/direct-distribution` are pushed; only the Store branch triggers Cloud.
+- After verifying installation of build 6, the user reopened Mail and confirmed
+  permanent unlock, translation of a new test message, and original-only view.
+  Real TestFlight claim/restore of the new free trial remains unverified.
   Existing build 3/4 permanent unlock/restore evidence below is historical and does
-  not establish the new free trial path. No resubmission is recorded yet.
+  not establish the new free trial path. Current detailed evidence is in
+  `2026-10-19-apple-only-release.md`.
 
 Initial preparation checked on 2026-10-10. Historical draft-state notes below are
 retained as an audit trail. On 2026-10-11, version 1.0.0 (4) and the permanent unlock
