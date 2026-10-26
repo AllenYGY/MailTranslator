@@ -8,7 +8,9 @@
 
 **Read both languages, right inside Apple Mail.**
 
-[简体中文](#简体中文) · [English](#english) · [隐私政策 / Privacy](docs/privacy-policy.md) · [支持 / Support](https://github.com/AllenYGY/MailTranslator/issues)
+[打开 MailTranslator 产品官网 / Visit the MailTranslator website](https://allenygy.github.io/MailTranslator/)
+
+[简体中文](#简体中文) · [English](#english) · [产品官网 / Website](https://allenygy.github.io/MailTranslator/) · [隐私政策 / Privacy](docs/privacy-policy.md) · [支持 / Support](https://github.com/AllenYGY/MailTranslator/issues)
 
 ![MailTranslator 双语邮件阅读](assets/01-bilingual.png)
 
