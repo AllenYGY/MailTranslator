@@ -4,7 +4,7 @@ Effective date / 生效日期：2026-10-28（适用于包含可选 LLM 的新构
 
 ## 简体中文
 
-本政策适用于 MailLingo（原 MailTranslator）的 **Mac App Store 版**的新构建。默认使用 Apple 系统翻译，也可由用户显式选择自带 API Key 的 OpenAI 兼容 LLM 服务。
+本政策适用于 MailLingo（原 MailTranslator）的 **Mac App Store 版**的新构建。默认使用 Apple 系统翻译，也可由用户显式选择自带 API Key 的 第三方 LLM 服务。
 
 ### 邮件与 Apple 系统翻译
 
@@ -50,7 +50,7 @@ Apple 翻译属于系统服务。Apple 的框架文档说明其可能收集 API 
 
 ## English
 
-This policy applies to the new **Mac App Store build** of MailLingo (formerly MailTranslator). Apple Translation is the default. Users can explicitly select an OpenAI-compatible LLM service with their own API key.
+This policy applies to the new **Mac App Store build** of MailLingo (formerly MailTranslator). Apple Translation is the default. Users can explicitly select an third-party LLM service with their own API key.
 
 ### Optional Volcengine Translation
 
